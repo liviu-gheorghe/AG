@@ -1,0 +1,53 @@
+.login-modal
+{
+    height:100vh;
+}
+.login-form
+{
+    padding:20px 50px;
+    background-color:#eee;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px;
+}
+.login-form input
+{
+    margin:5px 0px;
+    padding:10px;
+    width: 350px;
+    max-width: 75vw;
+    background-color:#eee;
+    border: none;
+}
+.login-button 
+{
+    background-color : rgb(12, 161, 12);
+    width:100px;
+    padding:10px;
+    outline: none;
+    border: none;
+    color:#fff;
+    border-radius: 5px;
+}
+.form-title
+{
+    font-size: 25px;
+    margin:10px;
+}
+.login-image img
+{
+    width:70%;
+    border-radius: 10px;
+}
+.welcome-message
+{
+    text-align: center;
+    font-size: 30px;
+    margin: 15px;
+}
+.toggle-form
+{
+    margin: 10px 0px;
+    font-size: 14px;
+    cursor:pointer;
+    border:none;
+}

@@ -1,0 +1,45 @@
+#ace_editor
+{
+    width: 100vw;
+}
+#output
+{
+   white-space:pre-wrap;
+}
+input
+{
+    margin:10px;
+}
+#send_solution_button
+{
+    margin:10px;
+}
+#language_selection
+{
+    max-height: 100px;
+}
+#loading_overlay
+{
+    z-index: 999;
+    background-color: rgba(9, 1, 37, 0.85);
+    position: absolute;
+    height:100vh;
+    width:100vw;
+    top: 0px;
+    left:0px;
+}
+#loaders
+{
+    text-align: center;
+}
+#loaders .spinner-grow
+{
+    color : #fff !important;
+    margin : 10px;
+}
+#evaluation_message
+{
+    color:#fff;
+    margin:10px;
+    font-size: 30px;
+}
