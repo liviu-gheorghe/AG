@@ -74,6 +74,8 @@ class Problem(models.Model):
     std_input = models.TextField(max_length=(1 << 10))
     #Problem standart output description
     std_output = models.TextField(max_length=(1 << 10))
+    #Problem restrictions description
+    restrictions = models.TextField(max_length=(1<<10),blank=True)
     '''
     Problem author 
     By default, if the author of the problem is removed from the 
@@ -86,7 +88,11 @@ class Problem(models.Model):
     time_limit = models.FloatField(default=0.5)
     #The source where the problem was retreived(if it does exist)
     #ex. CS Contensts
-    source = models.CharField(max_length=(1 << 5), null=True)
+    source = models.CharField(max_length=(1 << 5), blank=True,null=True)
+
+
+    def __str__(self):
+        return "Problem {}".format(self.id)
 
 
 class ProblemTest(models.Model):
@@ -133,4 +139,12 @@ class ProblemTest(models.Model):
     that the test belongs to)
 
     '''
-    pass
+    std_input = models.TextField(max_length=(1<<10),null=True)
+    std_output = models.TextField(max_length=(1<<16),null=True)
+    #When the related problem is removed,its tests shold also
+    #be removed
+    related_problem = models.ForeignKey(to=Problem,on_delete=models.CASCADE,null=True)
+
+
+    def __str__(self):
+        return "Test for {}".format(self.related_problem)
