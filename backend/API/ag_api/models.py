@@ -7,12 +7,36 @@ LANGUAGE_DESCRIPTION_MAX_LEN = (1 << 10)
 SNIPPET_CONTENT_MAX_LEN = (1 << 16)
 
 
-'''
-Model used for representing code snippets
-'''
+class UserDetail(models.Model):
+    '''
+    Model used for representing addditional 
+    user information
+    This informations could also have been
+    stored in the user model itself,but in
+    this way we keep the User model simpler
+    '''
+    #The user the info belongs to
+    user = models.OneToOneField(to=User,on_delete=models.CASCADE)
+    #Additional information
+    email = models.EmailField(blank=True)
+    #description
+    description = models.TextField(max_length=(1<<10),blank=True)
+    #interests
+    interests = models.TextField(max_length=(1 << 10), blank=True)
+    #profile image
+    profile_image = models.ImageField(blank=True)
+    #social media links
+    social_media_links = models.TextField(max_length=(1 << 6), blank=True)
+
+    def __str__(self):
+        return self.user.username
+
 
 
 class Snippet(models.Model):
+    '''
+    Model used for representing code snippets
+    '''
     #The content of the snippet
     content = models.TextField(max_length=SNIPPET_CONTENT_MAX_LEN, null=True)
     #The language the snippet is written in

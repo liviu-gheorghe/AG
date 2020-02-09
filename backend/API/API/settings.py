@@ -25,7 +25,7 @@ SECRET_KEY = '#t9v#)%n(b=ct6$youh4!7*^u9jsiy&9tka-i$1)is9_vl=hug)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.2', '127.0.0.1', ]
+ALLOWED_HOSTS = ['192.168.1.2', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -101,6 +101,31 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+'''
+
+EMAIL_HOST = {
+    'default' : 'smtp.gmail.com',
+}
+
+EMAIL_PORT = {
+    'default':'587',
+}
+
+EMAIL_HOST_PASSWORD = {
+    'default': 'liviugheorghe123456789',
+}
+
+EMAIL_HOST_USER = {
+    'default': 'gheorghel035@gmail.com',
+}
+
+
+EMAIL_BACKEND = {
+    'default': 'django.core.mail.backends.smtp.EmailBackend',
+}
+'''
+
+DEFAULT_FROM_EMAIL = 'gheorghel035@gmail.com'
 
 
 # Password validation
@@ -140,3 +165,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")

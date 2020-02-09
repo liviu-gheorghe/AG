@@ -28,9 +28,8 @@ class Login extends React.Component {
     }
 
     sendLoginData = () => {
-        console.log(JSON.stringify(this.state.credentials));
         fetch(
-            'http://127.0.0.1:8000/auth/',
+            `${process.env.REACT_APP_API_URL}/auth/`,
             {
                 method: 'POST',
                 body: JSON.stringify(this.state.credentials),
@@ -85,15 +84,15 @@ class Login extends React.Component {
         );
     }
     /**
-                    <Col xs={12} sm={12} lg={8}>
-                        <div className="login-image text-center">
-                            <img src="/login_page_image.jpg" alt="" />
-                            <p className="welcome-message">
-                                Bine ai (re)venit !
-                            </p>
-                        </div>
-                    </Col>
-     */
+    <Col xs={12} sm={12} lg={8}>
+         <div className="login-image text-center">
+            <img src="/login_page_image.jpg" alt="" />
+                <p className="welcome-message">
+                    Bine ai (re)venit !
+                </p>
+        </div>
+    </Col>
+    **/
 }
 
 class LoginPanel extends React.Component {
@@ -131,13 +130,13 @@ class RegisterPanel extends React.Component {
                     <input type="username" name="username" placeholder="Username" onChange={this.props.updateData}/>
                 </div>
                 <div>
-                    <input type="text" placeholder="Email adress" />
+                    <input type="text" name="email_adress" placeholder="Email adress" />
                 </div>                
                 <div>
                     <input type="password" name="password" placeholder="Password" onChange={this.props.updateData}/>
                 </div>
                 <div>
-                    <input type="password" placeholder="Confirm password" />
+                    <input type="password" name="password_confirm" placeholder="Confirm password" />
                 </div>
                 <div>
                     <button className="login-button" onClick={this.props.sendSignUpData}>Sign Up</button>

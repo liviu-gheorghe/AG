@@ -8,7 +8,7 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/webpack-resolver";
-
+import 'brace/ext/language_tools';
 
 function LoadingOverlay(props)
 {
@@ -63,7 +63,7 @@ class ProblemPage extends React.Component {
 
     fetchSnippets = () => {
         fetch(
-            'http://127.0.0.1:8000/api/languages/',
+            `${process.env.REACT_APP_API_URL}/api/languages/`,
             {
                 method : 'GET',
             }
@@ -104,7 +104,7 @@ class ProblemPage extends React.Component {
 		});
         var language_extension = this.state.current_language.toLowerCase();
         fetch(
-            'http://127.0.0.1:8000/evaluate/',
+            `${process.env.REACT_APP_API_URL}/evaluate/`,
             {
                 method: 'POST',
                 body: JSON.stringify({
@@ -177,7 +177,7 @@ class ProblemPage extends React.Component {
 							highlightActiveLine={true}
 							value={this.state.source_text} 
 							setOptions={{
-								enableBasicAutocompletion: true,
+                                enableBasicAutocompletion: true,
 								enableLiveAutocompletion: true,
 								enableSnippets: true,
 								showLineNumbers: true,
