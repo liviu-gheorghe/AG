@@ -15,21 +15,26 @@ class UserDetail(models.Model):
     stored in the user model itself,but in
     this way we keep the User model simpler
     '''
+
+    #Construct file path for image
+    def construct_path(instance,filename):
+        return "static/uploads/user/{}/{}".format(instance.user.username,filename)
+
     #The user the info belongs to
     user = models.OneToOneField(to=User,on_delete=models.CASCADE)
-    #Additional information
-    email = models.EmailField(blank=True)
     #description
     description = models.TextField(max_length=(1<<10),blank=True)
     #interests
     interests = models.TextField(max_length=(1 << 10), blank=True)
     #profile image
-    profile_image = models.ImageField(blank=True)
+    profile_image = models.ImageField(blank=True, upload_to=construct_path)
     #social media links
     social_media_links = models.TextField(max_length=(1 << 6), blank=True)
 
+
     def __str__(self):
         return self.user.username
+ 
 
 
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { withCookies } from 'react-cookie';
-import { Container, Row, Col, Button ,Spinner} from 'react-bootstrap';
+import {
+    Container, Row, Col, Button, Spinner, DropdownButton , Dropdown
+} from 'react-bootstrap';
 import Header from './components/Header';
 import './ProblemPage.css';
 //Ace editor imports
@@ -10,27 +12,64 @@ import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/webpack-resolver";
 import 'brace/ext/language_tools';
 
-function LoadingOverlay(props)
+
+class LoadingOverlay extends React.Component
 {
-	return (
-		<Container fluid id="loading_overlay">
-			<Row className="justify-content-center align-items-center">
-				<Col xs={6} id="loaders">
-					<>
-					{
-						[...Array(5)].map((val,i) => {
-							return (
-							<Spinner key={i} animation="grow"/>)
-						})
-					}
-					</>
-					<div id="evaluation_message">
-						Evaluating
-					</div>
-				</Col>
-			</Row>
-		</Container>
-	);
+    render()
+    {
+        return (
+            <Container fluid id="loading_overlay">
+                <Row className="justify-content-center align-items-center">
+                    <Col xs={6} id="loaders">
+                        <>
+                        {
+                        this.props.eval_state.source_pending ? (
+                                [...Array(5)].map((val,i) => {
+                                return (
+                                <Spinner key={i} animation="grow"/>)
+                            })
+                        ) : ('')
+                        }
+                        </>
+                        <div id="evaluation_message">
+                        <p>{this.props.eval_state.source_pending ? ("Evaluating,this may take a while") : ("Job done")}</p>
+                        </div>
+                        <div className="task_info">
+                            {this.props.eval_state.runtime_err ? (
+                                <p>{this.props.eval_state.runtime_err}</p>
+                            ) : (
+                            <>
+                                {
+                                    this.props.eval_state.evaluation_info.map((task, index) => {
+                                    return (<div key={index}>Test {index + 1} {task['status']}---> {task['time']}</div>)
+                                    })
+                                }
+                                {
+                                    this.props.eval_state.overall_score !== null ? (
+                                        <div>Scor : {this.props.eval_state.overall_score} p</div>
+                                    ) : ('')
+                                }
+                            </>
+                            )}
+                        </div>
+                    </Col>
+                </Row>
+                <Row className="justify-content-center align-items-center">
+                    <Col xs={12}>
+                        {
+                        this.props.eval_state.source_pending ? 
+                            ('') : 
+                            (
+                                <p className="text-center p-4">
+                                    <Button variant="outline-primary" onClick={() => {this.props.hideOverlay()}}>OK</Button>
+                                </p>
+                            )
+                        }
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
 }
 
 
@@ -50,15 +89,30 @@ class ProblemPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            source_text:  `#include <iostream>\nusing namespace std;\nint main()\n{\n\tcout<<24<<' '; \n\treturn 0;\n}`,
-            std_input: null,// 
-            output : null,//
-            errors : null,//
-            available_languages:[],//
-            current_language:"Cpp",// current selected language 
-			editor_mode:'c_cpp',
-			source_pending:false,// check whether a source is sending or not
+            source_text:  ``,
+            std_input: '',
+            output : null,
+            errors : null,
+            available_languages:[],
+            current_language:"Cpp",// current selected language
+            editor_mode:'c_cpp',
+
+            evaluation_state : {
+                evaluation_info: [],
+                evaluation_overlay: false,
+                source_pending: false,
+            }
         };
+    }
+
+    closeOverlay = () => {
+        this.setState({
+            evaluation_state: {
+                evaluation_info: [],
+                evaluation_overlay: false,
+                source_pending: false,
+            }
+        });
     }
 
     fetchSnippets = () => {
@@ -100,7 +154,13 @@ class ProblemPage extends React.Component {
 
     sendSolution = () => {
 		this.setState({
-			source_pending:true,// start sending the solution
+            evaluation_state: {
+                evaluation_overlay: true,
+                source_pending: true,
+                evaluation_info: [],
+                overall_score : null,
+                runtime_err : null,
+            },
 		});
         var language_extension = this.state.current_language.toLowerCase();
         fetch(
@@ -108,26 +168,38 @@ class ProblemPage extends React.Component {
             {
                 method: 'POST',
                 body: JSON.stringify({
+                    "type": language_extension,
                     "content": this.state.source_text.replace(/'/g, `"`),
-                    "std_input" : this.state.std_input,
-                    "name" : `File.${language_extension}`,
-                    "type" : language_extension,
+                    "stdin" : "",
+                    "filename" : `File.${language_extension}`,
+                    "time_limit": ""
                 }),
             }
         )
-           .then(resp => resp.json())
+           .then(resp => resp.text())
            .then(resp => {
                console.log(resp);
+                var resp_json = JSON.parse(resp.replace(/'/g, '"'));
+               console.log(resp_json);
+
                 this.setState({
-                    output : resp.stdout,
-					errors : resp.stderr,
-					source_pending:false,
+                    evaluation_state: {
+                        source_pending: false,
+                        evaluation_overlay: true,
+                        evaluation_info: resp_json['tests'],
+                        overall_score : resp_json['score'],
+                        runtime_err : resp_json['message'],
+                    },
                 });
             })
             .catch(err => {
 				console.log(err);
 				this.setState({
-					source_pending: false,
+                    evaluation_state: {
+                        source_pending: false,
+                        evaluation_overlay: true,
+                        evaluation_info: ["DE ACORD"],
+                    },
 				});
             }
             )
@@ -153,14 +225,16 @@ class ProblemPage extends React.Component {
                     </Col>
                     <Col xs={6}>
                         <div>
-                            <span>Selecteaza limbajul</span>
-                            <select id="language_selection">
+                            <DropdownButton
+                            title="Selecteaza limbajul"
+                            variant="success"
+                            >
                             {
                                 this.state.available_languages.map( (lang) => {
-                                    return <option key={lang.name}  onClick={ () => {this.toggleSelectedLanguage(lang)}}>{lang.name}</option>
+                                    return <Dropdown.Item key={lang.name} onClick={() => { this.toggleSelectedLanguage(lang) }}>{lang.name}</Dropdown.Item >
                                 })
                             }
-                            </select>
+                                </DropdownButton>
                         </div>                      
                     </Col>                    
                     <Col xs={12}>
@@ -194,7 +268,7 @@ class ProblemPage extends React.Component {
                 </Row>
             </Container>
 				{
-					(this.state.source_pending) ? (<LoadingOverlay />) : (<> </>)
+                    (this.state.evaluation_state.evaluation_overlay) ? (<LoadingOverlay eval_state={this.state.evaluation_state}  hideOverlay = {this.closeOverlay}/>) : (<> </>)
 				}
             </>
         );
