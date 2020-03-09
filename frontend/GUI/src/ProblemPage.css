@@ -1,14 +1,15 @@
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
 #ace_editor
 {
     width: 100vw;
-}
-#output
-{
-   white-space:pre-wrap;
-}
-input
-{
-    margin:10px;
 }
 #send_solution_button
 {
@@ -20,13 +21,9 @@ input
 }
 #loading_overlay
 {
-    z-index: 999;
-    background-color: rgba(9, 1, 37, 0.85);
-    position: absolute;
-    height:100vh;
-    width:100vw;
-    top: 0px;
-    left:0px;
+
+    min-height:93vh;
+
 }
 #loaders
 {
@@ -34,17 +31,41 @@ input
 }
 #loaders .spinner-grow
 {
-    color : #fff !important;
+
     margin : 10px;
 }
 #evaluation_message
 {
-    color:#fff;
+
     margin:10px;
     font-size: 30px;
 }
 
 .task_info
 {
-    color : #fff;
+
+}
+.problem_statement_wrapper
+{
+    margin :40px 10px;
+}
+.languages_list_wrapper
+{
+    margin : 40px 10px;
+}
+.languages_list_wrapper span
+{
+    transition: background-color .1s ease-in;
+    width : 100px;
+    text-align: center;
+    padding:15px;
+    margin:10px;
+    border-radius: 5px;
+    background-color: grey;
+    color:#fff;
+    cursor : pointer;
+}
+.active_language
+{
+    background-color: #0069d9 !important;
 }

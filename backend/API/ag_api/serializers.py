@@ -23,16 +23,40 @@ class LanguageSerializer(serializers.ModelSerializer):
         fields = ['name', 'default_snippet']
 
 
+
+
 class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         fields = [
+            'id',
             'name',
             'description',
             'std_input',
             'std_output',
+            'restrictions',
             'author',
             'memory_limit',
             'time_limit',
             'source',
+        ]
+
+
+class ProblemMediumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Problem
+        fields = [
+            'id',
+            'name',
+            'description',
+        ]
+
+
+
+class ProblemSmallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Problem
+        fields = [
+            'id',
+            'name',
         ]
