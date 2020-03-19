@@ -20,8 +20,8 @@ def execute(data_object,worker_type):
         stderr=subprocess.PIPE,
     )
     resp = proc.stdout.decode("utf-8")
-    
     '''
+    
     print("\n"*2,"-"*5,"Evaluator Error","-"*5)
     print(proc.stderr.decode("utf-8"))
     print("\n"*2,"-"*5, "Evaluator Error", "-"*5)

@@ -1,11 +1,9 @@
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Opera and Firefox */
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none; 
 }
 #ace_editor
 {
@@ -56,7 +54,7 @@
 .languages_list_wrapper span
 {
     transition: background-color .1s ease-in;
-    width : 100px;
+    width : 120px;
     text-align: center;
     padding:15px;
     margin:10px;

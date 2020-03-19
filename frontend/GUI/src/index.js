@@ -6,18 +6,24 @@ import { Route,BrowserRouter,Switch } from 'react-router-dom';
 import  Login  from './Login';
 import  HomePage  from './HomePage';
 import ProblemPage from "./ProblemPage";
+import ProblemsList from './ProblemsList';
+import Signup from './Signup';
+import UserPage from './UserPage';
 
 
 const Page_404 = () => {
-    return <h1>404 Page Not Found</h1>
+    return <h1>Error 404 Page Not Found</h1>
 }
 
 const router = (
     <BrowserRouter>
         <Switch>
-            <Route exact path="/login" component={Login} />
             <Route exact path="/" component={HomePage} />
-            <Route exact path="/problema/:problem_id" component={ProblemPage} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/inregistrare" component={Signup} />
+            <Route exact path="/probleme/" component={ProblemsList} />
+            <Route exact path="/probleme/:problem_id" component={ProblemPage} />
+            <Route exact path="/utilizatori/:username" component={UserPage} />
             <Route component={Page_404} />
         </Switch>
     </BrowserRouter>

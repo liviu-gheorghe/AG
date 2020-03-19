@@ -7,7 +7,7 @@ LANGUAGE_DESCRIPTION_MAX_LEN = (1 << 10)
 SNIPPET_CONTENT_MAX_LEN = (1 << 16)
 
 
-class UserDetail(models.Model):
+class UserProfile(models.Model):
     '''
     Model used for representing addditional 
     user information
@@ -17,8 +17,8 @@ class UserDetail(models.Model):
     '''
 
     #Construct file path for image
-    def construct_path(instance,filename):
-        return "static/uploads/user/{}/{}".format(instance.user.username,filename)
+    def construct_path(self,filename):
+        return "static/uploads/user/{}/{}".format(self.user.username,filename)
 
     #The user the info belongs to
     user = models.OneToOneField(to=User,on_delete=models.CASCADE)
@@ -33,7 +33,7 @@ class UserDetail(models.Model):
 
 
     def __str__(self):
-        return self.user.username
+        return '{}\'s Profile'.format(self.user.__str__())
  
 
 
@@ -105,12 +105,14 @@ class Problem(models.Model):
     std_output = models.TextField(max_length=(1 << 10))
     #Problem restrictions description
     restrictions = models.TextField(max_length=(1<<10),blank=True)
+    #Tags for the problem
+    tags  = models.TextField(max_length=(1<<10),blank=True)
     '''
     Problem author 
     By default, if the author of the problem is removed from the 
     #database,the problems posted by him should not be deleted
     '''
-    author = models.ForeignKey(User, models.PROTECT)
+    author = models.ForeignKey(User, models.SET_NULL,null=True)
     #Memory limit constraint
     memory_limit = models.IntegerField(default=(1 << 4))
     #Time limit constraint
@@ -121,7 +123,7 @@ class Problem(models.Model):
 
 
     def __str__(self):
-        return "Problem {}".format(self.id)
+        return self.name
 
 
 class ProblemTest(models.Model):

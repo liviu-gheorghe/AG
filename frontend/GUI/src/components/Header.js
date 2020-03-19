@@ -4,46 +4,73 @@ import { withCookies } from 'react-cookie';
 import { Nav,Navbar, NavDropdown, Button , FormControl,Form } from 'react-bootstrap';
 import './Header.css';
 class Header extends React.Component {
-
-
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            links : {},
+            language : 'ro',
+        }
+    }
     logOut = () =>
     {
         this.props.cookies.remove("auth_token");
         this.props.cookies.remove("username");
         window.location.href="/";
     }
-
+    componentWillMount () {
+        this.setState({
+            header_data : require('../assets/strings/header.json'),
+        })
+    }
+    componentDidMount () {
+    }
     render () {
         return (
-            <Navbar className="navbar" bg="dark" variant="dark" expand="lg">
-                <Navbar.Brand href="/home">AlgoGeek</Navbar.Brand>
+            <Navbar 
+            className="navbar" 
+            variant="dark"
+            bg = {
+                this.props.bgVariant ? this.props.bgVariant : "dark"
+            } 
+            expand="lg">
+                <Navbar.Brand href="/">AlgoGeek</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="#link">Articole</Nav.Link>
-                        <Nav.Link href="#link">Resurse</Nav.Link>
-                        <NavDropdown title="Probleme" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Clasa a IX-a</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Clasa a X-a</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Clasa a XI-a</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Probleme concurs</NavDropdown.Item>
-                        </NavDropdown>
+                        {
+                            this.state.header_data.section_links.map(
+                                (link,index) => {
+                                    return <Nav.Link key={index} href={link.href}>{link.text[this.state.language]}</Nav.Link>
+                                }
+                            )
+                        }
                     </Nav>
                     <Nav>
                     {
                         this.props.cookies.get("auth_token") ? (
 
                                 <NavDropdown title={this.props.logged_user} id="nav-dropdown" alignRight>
-                                    <NavDropdown.Item href="#action/3.1">Editare profil</NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.2">Solutiile mele</NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.3">Articolele mele</NavDropdown.Item>
+                                    {
+
+                                        this.state.header_data.user_options['links'].map(
+                                            (link, index) => {
+                                                return <NavDropdown.Item key={index} href="#action/3.1">{link.text[this.state.language]}</NavDropdown.Item>
+                                            }
+                                        )
+                                    }
                                     <NavDropdown.Divider />
-                                    <NavDropdown.Item onClick={this.logOut}>Delogare</NavDropdown.Item>
+                                    {
+                                        this.state.header_data.user_options['actions'].map(
+                                            (action,index) => {
+                                                return <NavDropdown.Item key={index} onClick={this.logOut}>{action.text[this.state.language]}</NavDropdown.Item>
+                                            }
+                                        )
+                                    }
                                 </NavDropdown>
                             
                         ) : (
-                                    <Nav.Link href="/login">Login</Nav.Link>
+                                <Nav.Link href="/login">Login</Nav.Link>
                         )
                     }
                     </Nav>

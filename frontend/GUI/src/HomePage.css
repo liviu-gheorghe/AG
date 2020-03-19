@@ -1,3 +1,14 @@
+body
+{
+    overflow-x: hidden;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+.join_community_link , .join_community_link:hover
+{
+    padding:10px;
+    text-decoration: none;
+    color: #fff;    
+}
 .main_section
 {
     margin: 15px 0px;
@@ -8,6 +19,63 @@
 }
 .subtitle
 {
-    font-size: 24px;
+    font-size: 25px;
     margin : 40px 0px;
+    text-align: center;
 }
+.background_wrapper
+{
+    background-image: url('./assets/img/9684-programming-free-wallpaper-hq.jpg');
+    background-size: cover;
+    height:100vh;
+    overflow: hidden;
+}
+.wallpaper_content
+{
+    color: #fff;
+    padding-left: 30px;
+}
+.icon_wrapper
+{
+   color: #fff; 
+   text-align: center;
+}
+.code_icon
+{
+    color: #fff;
+    font-size: 150px;
+}
+.homepage_info
+{
+    margin-top: 200px;
+}
+.homepage_info .card
+{
+    transition: all .2s ease-out;
+    text-align: center;
+    margin: 30px 0px;
+    height:280px;
+    cursor: pointer;
+}
+.homepage_info .card
+{
+    margin: auto !important;
+    margin-top: 30px !important;
+}
+.homepage_info .card:hover
+{
+    transform: scale(1.05);
+}
+.card_icon
+{
+    font-size: 40px;
+    margin: 10px;
+}
+.join_community_info_wrapper .row
+{
+    margin: 40px 0px;
+}
+.join_community_info_wrapper img
+{
+    width:100%;
+} 

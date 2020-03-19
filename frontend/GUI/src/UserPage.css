@@ -1,0 +1,28 @@
+
+.user_profile_image_wrapper
+{
+    text-align: center;
+}
+.user_profile_image_wrapper img
+{
+    object-fit: cover;
+    height:300px;
+    width:300px;
+    border-radius: 50%;
+}
+.user_information_wrapper
+{
+    text-align: left;
+}
+
+@media only screen and (max-width:768px) {
+.user_information_wrapper
+{
+    text-align: center;
+}
+}
+
+.social_media_links_wrapper a
+{
+    outline: none;
+}

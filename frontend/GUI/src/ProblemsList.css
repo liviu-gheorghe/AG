@@ -1,0 +1,37 @@
+.problems_list_page .card
+{
+    transition: all .15s ease-out;
+    min-height: 450px;
+    overflow: hidden;
+}
+.problem_image
+{
+    object-fit: cover;
+    height:200px;
+}
+.problems_list_page .card:hover
+{
+    transform: scale(1.025);
+}
+
+.circle_menu
+{
+    width : 15vw;
+    background-color: gray;
+    transition: all .2s ease-in;
+}
+.circle_menu:hover
+{
+transform: rotate3d(1, 1, 1, 45deg);
+}
+.circle_menu_inner
+{
+    position: absolute;
+    width:9vw;
+    height: 9vw;
+    top: 3vw;
+    left: 3vw;
+    background-color: #fff;
+    border-radius: 50%;
+    padding-top:3.75vw;
+}

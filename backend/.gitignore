@@ -1,3 +1,4 @@
 /virtualenv
 /API/db.sqlite3
 /API/static
+/Dockerfile

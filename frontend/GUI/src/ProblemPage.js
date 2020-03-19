@@ -1,7 +1,7 @@
 import React  from 'react';
 import { withCookies } from 'react-cookie';
 import {
-    Container, Row, Col, Button, Spinner, Modal
+    Container, Row, Col, Button, Spinner, Modal ,Table
 } from 'react-bootstrap';
 import Header from './components/Header';
 import Page404 from './components/Page404';
@@ -14,9 +14,14 @@ import "ace-builds/webpack-resolver";
 import 'brace/ext/language_tools';
 
 
-
 // eslint-disable-next-line
 class EvaluationModal extends React.Component {
+
+
+    areStringsEqual = (str1, str2) => {
+        return !str1.localeCompare(str2);
+    }
+    
     render() {
         return (
             <>
@@ -26,7 +31,7 @@ class EvaluationModal extends React.Component {
                 >
                 <Container fluid id="loading_overlay">
                     <Row className="justify-content-center align-items-center">
-                        <Col xs={10} id="loaders">
+                        <Col xs={12} md={12} lg={10} id="loaders">
                             <>
                                 {
                                     this.props.eval_state.source_pending ? (
@@ -45,22 +50,28 @@ class EvaluationModal extends React.Component {
                                     <p>{this.props.eval_state.runtime_err}</p>
                                 ) : (
                                         <>
-                                            {
-                                                this.props.eval_state.evaluation_info.map((task, index) => {
-                                                    if (task['compilation_error'])
-                                                        return (
-                                                            <div key={index}>
-                                                                ERROR ----> {task['compilation_error']}
-                                                            </div>
-                                                        )
-                                                    else
-                                                        return (
-                                                            <div key={index}>
-                                                                Test {index + 1} {task['status']}---> {task['time']}
-                                                            </div>
-                                                        )
-                                                })
-                                            }
+                                                <Table bordered>
+                                                    {
+                                                        this.props.eval_state.evaluation_info.map((task, index) => {
+                                                            if (task['compilation_error'])
+                                                                return (
+                                                                    <div key={index} className="text-danger">
+                                                                       {task['compilation_error']}
+                                                                    </div>
+                                                                )
+                                                            else
+                                                                return (
+                                                                    <tr key={index} className={
+                                                                        (this.areStringsEqual(task['status'],"OK")) ? "bg-success" : "bg-danger"
+                                                                    }>
+                                                                        <td>Test {index + 1}</td>
+                                                                        <td>{task['status']}</td>
+                                                                        <td>{task['time']}</td>
+                                                                    </tr>
+                                                                )
+                                                        })
+                                                    }
+                                                </Table>
                                             {
                                                 this.props.eval_state.overall_score !== null ? (
                                                     <div>Scor : {this.props.eval_state.overall_score} p</div>
@@ -173,7 +184,7 @@ class ProblemPage extends React.Component {
     }
 	
 	toggleSelectedLanguage = lang => {
-		//this.updateSourceText(lang.default_snippet);
+		this.updateSourceText(lang.default_snippet);
 		this.setState({
 			current_language: lang.name,
 			editor_mode: this.ACE_MODES[lang.name],
@@ -219,7 +230,7 @@ class ProblemPage extends React.Component {
         )
            .then(resp => resp.json())
            .then(resp_json => {
-               console.log(resp_json);
+               //console.log(resp_json);
                 this.setState({
                     evaluation_state: {
                         source_pending: false,
@@ -243,7 +254,7 @@ class ProblemPage extends React.Component {
             )
     }
 
-    componentDidMount()
+    componentWillMount()
     {
         // fetching problem data from the API 
         this.fetchProblemData(this.props.match.params.problem_id);        
@@ -318,7 +329,8 @@ class ProblemPage extends React.Component {
             </div>
         );
         else 
-            return <Page404 />  
+            return <></>
+            //return <Page404 />  
     }
 }
 
