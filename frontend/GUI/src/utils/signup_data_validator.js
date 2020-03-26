@@ -1,25 +1,19 @@
-import {areStringsEqual} from './core';
+//import {areStringsEqual} from './core';
 export function isValidInput(type,value) {
     switch (type) {
         case 'first_name':
             return validateFirstName(value);
-            break;
         case 'last_name':
             return validateLastName(value);
-            break;
         case 'username':
             return validateUsername(value);
-            break;
         case 'email':
             return validateEmail(value);
-            break;
         case 'password':
             return validatePassword(value);
-            break;
         default:
             return true;
-            break;
-    }
+        }
 }
 
 function validateFirstName(value) {
@@ -46,6 +40,7 @@ function validateUsername(value) {
     return true;
 }
 function validateEmail(value) {
+    // eslint-disable-next-line
     var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     if (regex.exec(value) === null)
         return false;

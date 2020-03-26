@@ -1,11 +1,11 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
-import {Container,Row,Col,Image,Button,Badge} from 'react-bootstrap';
+import {Container,Row,Col,Button,Badge} from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 import  Header  from './components/Header';
 import './UserPage.css'
 //import { Chart } from "react-google-charts";
-import {parseUrl} from './utils/urlparser';
+//import {parseUrl} from './utils/urlparser';
 
 
 class UserPage extends React.Component
@@ -22,35 +22,32 @@ class UserPage extends React.Component
             user_found:false,
         }
     }
-    componentWillMount() {
-
-        let location=this.props.location.pathname;
-        let username=location.split('/').slice(-1)[0]
+    componentWillMount() {        
+    }
+    componentDidMount() {
+        let location = this.props.location.pathname;
+        let username = location.split('/').slice(-1)[0]
         fetch(
             `${process.env.REACT_APP_API_URL}/api/users/${username}/?identifier=username`,
             {
-                method:'get',
+                method: 'get',
             }
         )
-        .then(resp => resp.json())
-        .then(
-            (resp) => {
-                //console.log(resp);
-                this.setState({
-                    user:resp,
-                    user_found:true,
-                })
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err);
-            }
-        )
-
-        
-    }
-    componentDidMount() {
+            .then(resp => resp.json())
+            .then(
+                (resp) => {
+                    //console.log(resp);
+                    this.setState({
+                        user: resp,
+                        user_found: true,
+                    })
+                }
+            )
+            .catch(
+                (err) => {
+                    console.log(err);
+                }
+            )
     }
     render() {
         return (
@@ -59,7 +56,7 @@ class UserPage extends React.Component
             <Container className="user_page_wrapper">
                 <Row className="my-2 align-items-center justify-content-center">
                     <Col xs={12} md={6} className="user_profile_image_wrapper my-2">
-                                <img src={`http://localhost/${this.state.user.userprofile.profile_image}`}></img>
+                                <img src={`http://localhost/${this.state.user.userprofile.profile_image}`} alt=''></img>
                     </Col>
                     <Col xs={12} md={6} className="user_information_wrapper my-2">
                             <h2 className="full_name">{this.state.user.first_name} {this.state.user.last_name}</h2>
@@ -81,7 +78,7 @@ class UserPage extends React.Component
                         </Button>
                         </p>
                         <div className="social_media_links_wrapper" style={{ padding: "20px 0px" }}>
-                            <a href="https://github.com/liviu-gheorghe" target="_blank"><i className="fab fa-github" style={{ padding: "10px", fontSize: "35px", color: "black" }}></i></a>
+                                <a href="https://github.com/liviu-gheorghe" target="_blank" rel="noopener noreferrer"><i className="fab fa-github" style={{ padding: "10px", fontSize: "35px", color: "black" }}></i></a>
                             <i className="fab fa-facebook" style={{ padding:"10px", fontSize: "35px", color: "blue" }}></i>
                             <i className="fab fa-google-plus" style={{ padding:"10px", fontSize: "35px", color: "red" }}></i>
                         </div>

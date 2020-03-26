@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import User, Language, Snippet, Problem,UserProfile
+from .models import *
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -32,7 +32,6 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
-        Token.objects.create(user=user)
         return user
 
 
@@ -43,6 +42,44 @@ class LanguageSerializer(serializers.ModelSerializer):
         fields = ['name', 'default_snippet']
 
 
+
+class SnippetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snippet
+        fields = [
+            'content',
+            'public',
+        ]
+
+
+
+#Serializer used for listing problem solution
+class ProblemSolutionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemSolution
+        fields = [
+            'id',
+            'problem',
+            'author',
+            'source_type',
+            'score',
+            'date_posted',
+        ]
+
+
+
+class ProblemSolutionDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemSolution
+        fields = [
+            'id',
+            'problem',
+            'author',
+            'source_text',
+            'source_type',
+            'score',
+            'date_posted',
+        ]
 
 
 class ProblemSerializer(serializers.ModelSerializer):
@@ -79,7 +116,6 @@ class ProblemMediumSerializer(serializers.ModelSerializer):
 
 
 class ProblemSmallSerializer(serializers.ModelSerializer):
-    author = UserSerializer(many=False)
     class Meta:
         model = Problem
         fields = [
@@ -87,3 +123,5 @@ class ProblemSmallSerializer(serializers.ModelSerializer):
             'name',
             'tags',
         ]
+
+

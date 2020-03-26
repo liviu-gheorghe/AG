@@ -41,7 +41,7 @@ class Login extends React.Component {
             .then(resp => resp.json())
             .then(resp => {
                 if (resp.token) {
-                    this.props.cookies.set('auth_token', resp.token);
+                    this.props.cookies.set('auth_token',resp.token);
                     this.props.cookies.set('username', this.state.credentials["username"]);
                     this.setState({
                         error_msg: null,

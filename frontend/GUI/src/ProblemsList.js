@@ -7,19 +7,23 @@ import
     Row,
     Col, 
     Card,
+    // eslint-disable-next-line
     CardColumns,
+    // eslint-disable-next-line
     CardDeck,
     Button,
     InputGroup,
     FormControl,
     Pagination,
+    Badge,
     } 
     from 'react-bootstrap';
+// eslint-disable-next-line
 import FontAwesome from 'react-fontawesome';
 import './Main.css';
 import './ProblemsList.css';
 
-
+// eslint-disable-next-line
 class ProblemCard extends React.Component {
     render () {
         return (
@@ -45,30 +49,30 @@ class ProblemsList extends React.Component {
         }
     }
     componentWillMount() {
-        fetch(
-            `${process.env.REACT_APP_API_URL}/api/problems/?s_id=2`,
-            {
-                method:'get',
-            }
-        )
-        .then(resp => resp.json())
-        .then(
-                (resp) => {
-                    this.setState({
-                        problems_list:resp,
-                    });
-                }
-        )
-        .catch(
-            (err) => {
-                console.log(err);
-            }
-        )
 
     }
 
     componentDidMount() {
-        console.log(this.props.lang);
+        fetch(
+            `${process.env.REACT_APP_API_URL}/api/problems/?s_id=2`,
+            {
+                method: 'get',
+            }
+        )
+            .then(resp => resp.json())
+            .then(
+                (resp) => {
+                    console.log(resp);
+                    this.setState({
+                        problems_list: resp,
+                    });
+                }
+            )
+            .catch(
+                (err) => {
+                    console.log(err);
+                }
+            )
     }
 
    render () {
@@ -98,7 +102,18 @@ class ProblemsList extends React.Component {
                             (problem,index) => {
                                 var img_src = (index%3) ? "asset003.jpg" : "graph.png";
                                 return (
-                                    <Col key={index} xs={12} sm={12} md={6} lg={4}  className="my-4"> 
+                                    <Col key={index}
+                                    xs={12}
+                                    sm={6}
+                                    md={6}
+                                    lg={4}
+                                    className="my-4"
+                                    onClick = {
+                                        () => {
+                                            //window.location.href = `/probleme/${problem.id}`
+                                        }
+                                    }
+                                    > 
                                     <Card>
                                         <Card.Img className="problem_image" variant="top" src={
                                             require(`./assets/img/${img_src}`)
@@ -108,6 +123,18 @@ class ProblemsList extends React.Component {
                                             <Card.Text>
                                                 {problem.description.slice(0, 100).split(" ").slice(0,-1).join(' ')} <a href={`/probleme/${problem.id}`}>Mai mult</a>
                                             </Card.Text>
+                                                <Card.Text>
+                                                    Taguri 
+                                                    {
+                                                        problem.tags.split(',').map(
+                                                            (tag,index) => 
+                                                            {
+                                                                return (
+                                                                        <Badge key={index} className="px-2 py-1 m-2" variant="primary">{tag}</Badge>                                                                );
+                                                            }
+                                                        )
+                                                    }
+                                                </Card.Text>                                            
                                         </Card.Body>
                                         <Card.Footer className="bg-danger">
                                         <small className="text-white">

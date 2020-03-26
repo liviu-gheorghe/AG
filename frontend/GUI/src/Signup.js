@@ -4,9 +4,12 @@ import './Main.css';
 import FontAwesome from 'react-fontawesome';
 import {Container,Row,Col, Button} from 'react-bootstrap';
 import ReCAPTCHA from "react-google-recaptcha";
-import { isValidInput,isValidPasssword} from './utils/signup_data_validator';
+import { isValidInput} from './utils/signup_data_validator';
+//import { isValidPassword } from './utils/signup_data_validator';
 import {areStringsEqual} from './utils/core';
 
+
+/** 
 function InputWarning(props) 
 {
     return (
@@ -15,7 +18,7 @@ function InputWarning(props)
         </span>
     );
 }
-
+**/
 
 class Signup extends React.Component
 {
@@ -65,7 +68,7 @@ class Signup extends React.Component
             var areInputsValid = true;
             for(var input_type in ["first_name","last_name","username","email","password","password_check"])
             {
-                if(!(this.state.input_warning[input_type]==''))
+                if(!(this.state.input_warning[input_type]===''))
                 {
                     areInputsValid = false;
                     break;
@@ -203,7 +206,7 @@ class Signup extends React.Component
                                                     }
                                                 )
                                                 .then(resp => { 
-                                                        window.location.reload();
+                                                        console.log(resp);
                                                     }
                                                 )
                                             }

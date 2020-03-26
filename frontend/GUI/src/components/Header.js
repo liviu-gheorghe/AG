@@ -14,8 +14,10 @@ class Header extends React.Component {
     }
     logOut = () =>
     {
-        this.props.cookies.remove("auth_token");
-        this.props.cookies.remove("username");
+        //console.log("Logging out,bye");
+        //https://github.com/reactivestack/cookies/issues/16
+        this.props.cookies.remove("auth_token", { path: '/' });
+        this.props.cookies.remove("username", { path: '/' });
         window.location.href="/";
     }
     componentWillMount () {
@@ -63,7 +65,15 @@ class Header extends React.Component {
                                     {
                                         this.state.header_data.user_options['actions'].map(
                                             (action,index) => {
-                                                return <NavDropdown.Item key={index} onClick={this.logOut}>{action.text[this.state.language]}</NavDropdown.Item>
+                                                return (
+                                                <NavDropdown.Item 
+                                                    key={index} 
+                                                    onClick={ 
+                                                        this.logOut
+                                                }>
+                                                        {action.text[this.state.language]}
+                                                </NavDropdown.Item>
+                                                );
                                             }
                                         )
                                     }

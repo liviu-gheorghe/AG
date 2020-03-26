@@ -20,8 +20,11 @@ class HomePage extends React.Component {
     }
     componentWillMount() {
         this.setState({
-            homepage_data : require('./assets/strings/home_page.json'),
+            homepage_data: require('./assets/strings/home_page.json'),
         })
+    }
+    componentDidMount() {
+
     }
     render() {
         return (
@@ -33,7 +36,7 @@ class HomePage extends React.Component {
                             <Col className="wallpaper_content justify-content-center align-items-center" xs={12} md={12} lg={12} xl={5} >
                                 <h2>{this.state.homepage_data['wallpaper_description']['text'][this.state.language]}</h2>
                                 <div className="icon_wrapper"><FontAwesome name="code" className="code_icon"> </FontAwesome></div>
-                            </Col>                         
+                            </Col>
                         </Row>
                     </Container>
                 </div>
@@ -197,24 +200,3 @@ class HomePage extends React.Component {
 }
 
 export default withCookies(HomePage);
-
-/**
-<Container fluid>
-    <Row className="justify-content-center">
-        <Col xs={12} sm={12} md={10} lg={8} className="main_section ">
-                <p className="subtitle text-center">
-                    Probleme recent adaugate
-            </p>
-            <ProblemList className="text-center"/>
-        </Col>
-    </Row>
-    <Row className="justify-content-center">
-        <Col xs={12} sm={12} md={10} lg={8} className="main_section ">
-            <p className="subtitle text-center">
-                Articole recent adaugate
-        </p>
-            <ProblemList className="text-center" />
-        </Col>
-    </Row>
-</Container>
- */
