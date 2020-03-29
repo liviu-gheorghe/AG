@@ -63,7 +63,11 @@ class ProblemSolutionListSerializer(serializers.ModelSerializer):
             'author',
             'source_type',
             'score',
+            'datetime_posted',
             'date_posted',
+            'time_posted',
+            'is_recent',
+            'is_recent_date_posted'
         ]
 
 
@@ -78,7 +82,11 @@ class ProblemSolutionDetailSerializer(serializers.ModelSerializer):
             'source_text',
             'source_type',
             'score',
+            'datetime_posted',
             'date_posted',
+            'time_posted',
+            'is_recent',
+            'is_recent_date_posted'
         ]
 
 
@@ -94,6 +102,9 @@ class ProblemSerializer(serializers.ModelSerializer):
             'std_output',
             'restrictions',
             'tags',
+            'difficulty',
+            'level',
+            'date_posted',
             'author',
             'memory_limit',
             'time_limit',
@@ -102,14 +113,19 @@ class ProblemSerializer(serializers.ModelSerializer):
 
 
 class ProblemMediumSerializer(serializers.ModelSerializer):
-    author = UserSerializer(many=False)
     class Meta:
         model = Problem
         fields = [
             'id',
             'name',
             'description',
+            'difficulty',
+            'level',
             'author',
+            'date_posted',
+            'time_posted',
+            'is_recent',
+            'is_recent_date_posted',
             'tags',
         ]
 

@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator,MaxValueValidator
+import datetime
+from math import floor
+from . import utils
+
+
 
 LANGUAGE_NAME_MAX_LEN = (1 << 4)
 LANGUAGE_DESCRIPTION_MAX_LEN = (1 << 10)
@@ -95,14 +100,15 @@ class Snippet(models.Model):
     '''
     public = models.BooleanField(default=True)
 
+
+    #datetime_posted = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         if self.default:
             return "Default {}".format(self.snippet_type)
         else:
-            if hasattr(self,"problemsolution") is False:
-                return "{} source".format(self.snippet_type)
-            else:
-                return "{} source {}".format(self.snippet_type,self.problemsolution)
+            return "{} source".format(self.snippet_type)
+
 
 
 class Language(models.Model):
@@ -152,6 +158,33 @@ class Problem(models.Model):
         'source' : (1<<6),
     }
 
+    '''
+    Choices for problem difficulty
+    '''
+    PROBLEM_DIFFICULTY = [
+        ('elementar', 'elementar'),
+        ('usor','usor'),
+        ('intermediar','intermediar'),
+        ('dificil','dificil')
+    ]
+
+
+    '''
+    Choices for the problem level
+    Note that the problem level filed is
+    optionally(can be null)
+    '''
+    PROBLEM_LEVEL = [
+        ('V','V'),
+        ('VI','VI'),
+        ('VII','VII'),
+        ('VIII','VIII'),
+        ('IX','IX'),
+        ('X','X'),
+        ('XI','XII'),
+        ('XII','XII')
+    ]
+
     #Problem title
     name = models.CharField(
         max_length=FIELD_MAX_LEN['name']
@@ -160,6 +193,22 @@ class Problem(models.Model):
     #Problem description
     description = models.TextField(
         max_length=FIELD_MAX_LEN['description']
+    )
+
+    #Problem difficulty
+    
+    difficulty = models.TextField(
+        choices=PROBLEM_DIFFICULTY,
+        default='usor'
+    )
+
+    #Problem level
+
+    level = models.TextField(
+        choices=PROBLEM_LEVEL,
+        null=True,
+        blank=True
+        
     )
 
     #Problem standard input description
@@ -183,11 +232,10 @@ class Problem(models.Model):
         max_length=FIELD_MAX_LEN['source'],
         blank=True
     )
-    '''
-    Problem author 
-    By default, if the author of the problem is removed from the 
+    
+    #Problem author 
+    #By default, if the author of the problem is removed from the 
     #database,the problems posted by him should not be deleted
-    '''
     author = models.ForeignKey(
         User,
         models.SET_NULL,
@@ -217,13 +265,28 @@ class Problem(models.Model):
     )
     
     #The source where the problem was retreived(if it does exist)
-    #ex. CS Contensts
+    #ex. CS Contensts,Informatics Olympiad etc
     source = models.CharField(
         max_length=FIELD_MAX_LEN['source'],
         blank=True,
         null=True
     )
 
+    datetime_posted = models.DateTimeField(auto_now=True)
+
+
+    def time_posted(self):
+        return utils.time_posted(self)
+
+    def date_posted(self):
+        return utils.date_posted(self)
+
+    def is_recent(self):
+        return utils.is_recent(self)
+
+
+    def is_recent_date_posted(self):
+        return utils.is_recent_date_posted(self)
 
     def __str__(self):
         return self.name
@@ -344,13 +407,25 @@ class ProblemSolution(models.Model):
     #The time when the solution is posted,
     #automatically set to the time when
     #the users uploads the solution
-    date_posted = models.DateTimeField(auto_now=True)
+    datetime_posted = models.DateTimeField(auto_now=True)
+
+    def time_posted(self):
+        return utils.time_posted(self)
+
+    def date_posted(self):
+        return utils.date_posted(self)
+
+    def is_recent(self):
+        return utils.is_recent(self)
+
+    def is_recent_date_posted(self):
+        return utils.is_recent_date_posted(self)
 
 
     def __str__(self):
         return "{} {}".format(
             self.author,
-            self.date_posted.strftime(
+            self.datetime_posted.strftime(
                 "on %d/%m/%Y at %H:%M:%S"
             )
         )

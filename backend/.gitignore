@@ -1,5 +1,6 @@
 /virtualenv
 /API/db.sqlite3
 /API/static
-/Dockerfile
+/API/Dockerfile
 /junk
+/API/API/__pycache__

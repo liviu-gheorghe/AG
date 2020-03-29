@@ -50,35 +50,51 @@ class ProblemViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
     serializer_class = ProblemSerializer
     queryset = Problem.objects.all()
-
-    '''
-    def get_serializer(self):
-        print(self.request.__dict__,"\n"*3)
-
-    '''
-    def get_queryset(self):
-        print(self.request.GET,"\n"*3),
-        return Problem.objects.order_by('-id')
-    
-
-
     permission_classes = (AllowAny,)
-    def list(self, request):
-        url_parameters = request.GET
-        queryset = Problem.objects.order_by('-id').all()
-        #print(url_parameters)
-        if url_parameters and url_parameters['s_id']:
-            serializer_type = url_parameters['s_id'][0]
-            if serializer_type == '1':
-                serializer = ProblemSerializer(queryset, many=True)
-            elif serializer_type == '2':
-                serializer = ProblemMediumSerializer(queryset, many=True)
-            elif serializer_type == '3':
-                serializer = ProblemSmallSerializer(queryset, many=True)
-        else:
-            serializer = ProblemSerializer(queryset, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_serializer_class(self):
+        #For the list view use the medium serializer 
+        #because not all the info about the problem is 
+        #required
+        if self.action == 'list':
+            return ProblemMediumSerializer
+        #For the retrieve view use the normal serializer 
+        #because all the info about the problem is needed
+        elif self.action == 'retrieve':
+            return ProblemSerializer
+
+
+
+    def get_queryset(self,**kwargs):
+        print("Line 70 in views.py",self.request.GET,"\n"*3)
+        print("Line 71 in views.py", kwargs)
+
+        #The url get parameters provided
+        urlparams = self.request.GET
+        if urlparams:
+            if urlparams.get('id'):
+                kwargs['id'] = urlparams['id']
+            if urlparams.get('name'):
+                kwargs['name__icontains'] = urlparams['name']
+            if urlparams.get('tag'):
+                kwargs['tags__icontains'] = urlparams.get('tag')
+            if urlparams.get('difficulty'):
+                kwargs['difficulty__in'] = urlparams.getlist('difficulty')
+
+
+        # By default , get only the few first records
+        index_start = 0
+        index_end = 5
+        if urlparams.get('start'):
+            index_start = int(urlparams['start'])
+        if urlparams.get('end'):
+            index_end = int(urlparams['end'])
+        #Slice the querydict only when listing
+        if self.action == 'list':
+            return Problem.objects.order_by('-id').filter(**kwargs)[index_start:index_end]
+        else:
+             return Problem.objects.order_by('-id').filter(**kwargs)
 
 
 
@@ -120,9 +136,8 @@ class ProblemSolutionViewSet(viewsets.ReadOnlyModelViewSet):
         if urlparams.get('latest'):
             pass
 
-        print("Line 123 ",self.request.user.id)
 
-        return ProblemSolution.objects.order_by('-date_posted').filter(**kwargs)
+        return ProblemSolution.objects.order_by('-datetime_posted').filter(**kwargs)
 
 
 @api_view(['POST',])
@@ -197,7 +212,7 @@ def evaluate(request):
     score = (correct_tests_count/len(test_list))*100
     score = int(score)
 
-    #After the evaluation process is computed,the solution should be automatically
+    #After the evaluation process,the solution should be automatically
     #added to the database
 
 

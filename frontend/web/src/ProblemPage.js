@@ -195,8 +195,6 @@ class ProblemPage extends React.Component {
                 });
             })
     }
-          
-    
 
 
     fetchProblemSolutions = () => {
@@ -228,6 +226,7 @@ class ProblemPage extends React.Component {
                 {
                     if(this.state.unauthorized === false)
                     {
+                    console.log(resp)
                     console.log("Setting up problems");
                     this.setState({
                         problem_solutions : resp
@@ -259,6 +258,7 @@ class ProblemPage extends React.Component {
                 problem : resp,
             });
         })
+        .catch(err => {console.log(err)})
     }
     toggleSelectedLanguage = lang => {
         this.updateSourceText(lang.default_snippet);
@@ -280,6 +280,11 @@ class ProblemPage extends React.Component {
         });
     }
              
+
+    denySending = () => {
+        alert("Pentru a trimite solutii trebuie sa fii conectat");
+    }
+
     sendSolution = () => {
         this.setState({
             evaluation: {
@@ -425,7 +430,7 @@ class ProblemPage extends React.Component {
                                     }}
                                 />
                                 <p className="text-center">
-                                    <Button id="send_solution_button" onClick={this.sendSolution}>Trimite solutia</Button>
+                                    <Button id="send_solution_button" onClick={this.state.unauthorized ? this.denySending : this.sendSolution}>Trimite solutia</Button>
                                 </p>
                             </Col>
                         </Row>
@@ -448,11 +453,6 @@ class ProblemPage extends React.Component {
                                             return (
                                                 <Col key={index} xs={12} md={6} lg={4} xl={4} className="my-4">
                                                 <Card
-                                                    onClick={
-                                                        () => {
-                                                            window.location.href = "/probleme/";
-                                                        }
-                                                    }
                                                     bg={solution.score == "100" ? "success" : "danger"}
                                                     style={
                                                         {
@@ -469,10 +469,17 @@ class ProblemPage extends React.Component {
                                                                 Tip : {solution.source_type}
                                                             </p>
                                                             <p>
-                                                                Punctaj : {solution.score}
+                                                                Punctaj : {solution.score} pct
                                                             </p>
                                                             <p>
-                                                                Data : {solution.date_posted}
+                                                                Incarcat :<br/>
+                                                                {
+                                                                    solution.is_recent ? (
+                                                                        "Acum " + solution.is_recent_date_posted
+                                                                    ) : (
+                                                                                `${solution.date_posted} ${solution.time_posted}`
+                                                                    )
+                                                                }
                                                             </p>                      
                                                             <FontAwesome
                                                                 name={solution.score == "100" ? "check":"times"}
