@@ -10,6 +10,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 import requests,json,subprocess,os,requests
 from .evaluator import execute as exc
 
@@ -23,16 +24,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
     def retrieve(self, request, *args, **kwargs):
-
         identifier_type = request.GET['identifier'] if request.GET and request.GET['identifier'] else 'id'
-
         try:
             if identifier_type == 'id':
                 serializer = UserSerializer(User.objects.get(id=kwargs['pk']))
             elif identifier_type == 'username':
                 serializer = UserSerializer(User.objects.get(username=kwargs['pk']))
         except:
-            return Response(data={'detail':'Not found.'}, status=status.HTTP_200_OK)
+            return Response(data={'detail':'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(data=serializer.data,status=status.HTTP_200_OK)
 
@@ -67,8 +66,8 @@ class ProblemViewSet(viewsets.ModelViewSet):
 
 
     def get_queryset(self,**kwargs):
-        print("Line 70 in views.py",self.request.GET,"\n"*3)
-        print("Line 71 in views.py", kwargs)
+        #print("Line 70 in views.py",self.request.GET,"\n"*3)
+        #print("Line 71 in views.py", kwargs)
 
         #The url get parameters provided
         urlparams = self.request.GET
@@ -99,50 +98,78 @@ class ProblemViewSet(viewsets.ModelViewSet):
 
 
 class ProblemSolutionViewSet(viewsets.ReadOnlyModelViewSet):
+    #Use the list serializer by default
     serializer_class = ProblemSolutionListSerializer
+    #By default,the queryset is represented by all the objects 
+    #in the database
     queryset = ProblemSolution.objects.all()
-    permission_classes = (IsAuthenticated,)
-
-
-
+    permission_classes = (AllowAny,)
+    #Get the serializer class according to the 
+    #current action
     def get_serializer_class(self):
+        #The list wiew should use the list serializer 
+        #as not all the information about the problem 
+        #solution is required
         if self.action == 'list':
             return ProblemSolutionListSerializer
+        #The retrieve view should use the detail serializer 
+        #as all the information about the problem solution is
+        #required 
         elif self.action == 'retrieve':
             return ProblemSolutionDetailSerializer
-
-
     def get_queryset(self,**kwargs):
-
         print("Line 101 in views.py ",self.request.user.id)
-
-        #The url get parameters provided 
+        #The URL GET parameters provided in the request 
+        #According to this urlparams
+        #only specific records should be included in the 
+        #queryset
         urlparams = self.request.GET
-
         #https://docs.djangoproject.com/en/3.0/ref/request-response/#querydict-objects
-
-        #If any problem is specified
+        #If any problem is specified,then add this constraint in
+        #the filter's field lookups in order to return 
+        #only the required records
         if urlparams.get('problem'):
+            #Use Django's specific field lookup syntax
             kwargs['problem__in']  = urlparams.getlist('problem')
 
-        #If any author is specified in the request then retrieve
-        #the solutions for that user,else retrieve the solutions 
-        #of the user that makes the request
+        #If any author is specified in the request's URL parameters,
+        #then get the solutions posted by that user,else get the solutions 
+        #posted by the authenticated user
+        #If the intention is to get the solutions for the 
+        #authenticated user, the frontend will make a request 
+        #to this endpoint providing the auhor paramater as `self`
         if urlparams.get('author'):
-            kwargs['author__in'] = urlparams.getlist('author')
-        else:
-            kwargs['author'] = self.request.user.id
-        
+            if urlparams.get('author') == 'self':
+                kwargs['author'] = self.request.user.id
+            else:
+                kwargs['author__in'] = urlparams.getlist('author')
+
         if urlparams.get('latest'):
             pass
+            #TODO
 
-
+        #return the filtered queryset, showing the latest records first
         return ProblemSolution.objects.order_by('-datetime_posted').filter(**kwargs)
+
+    #For a single solution, all we need to do is to 
+    #get the solution according to the provided pk
+    #and serialize it using the detail serializer 
+    #(because on the frontend we will provide the user with 
+    # all the necessary information about the solution)
+    def retrieve(self,request,pk):
+        #If the solution is not found a 404 status code 
+        #should be provided in the returned http response
+        obj=get_object_or_404(ProblemSolution,pk=pk)
+        #Return the serialized data
+        return Response(data=ProblemSolutionDetailSerializer(obj).data)
+
 
 
 @api_view(['POST',])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def evaluate(request):
+    '''
+    '''
     #converting the request body from bytestream to python object
     payload = json.loads(
         request.body.decode('utf8').replace("'", '"'))
@@ -162,7 +189,16 @@ def evaluate(request):
     #Delete the problem name because it is stored in filename field
     del payload['problem_name']
     type_of_source = payload['type_of_source']
-    evaluation_response = exc(payload, type_of_source)
+    #Convert the payload to json string and provide it to the POST 
+    # request for the evaluation server
+
+    json_payload = json.dumps(payload)
+    evaluation_response = requests.post(
+        'http://127.0.0.1:7000',
+        data=json_payload
+    ).json()
+
+
     if 'compilation_error' in evaluation_response:
         message = {
             'compilation_error': evaluation_response['compilation_error'],
@@ -188,10 +224,13 @@ def evaluate(request):
                 test_ok = (test_list[iterator].std_output.replace('\r\n', '\n').strip()
                            == evaluation_response[iterator]['stdout'].strip())
                 
+
+                '''
                 print("DB test\n", test_list[iterator].std_output.replace(
                     '\r\n', '\n').strip(),"\n")
                 print("Eval output \n",
                       evaluation_response[iterator]['stdout'].strip(),"\n")
+                '''
 
                 if test_ok:
                     #Increment correct tests count
@@ -212,14 +251,13 @@ def evaluate(request):
     score = (correct_tests_count/len(test_list))*100
     score = int(score)
 
+
+
+    #print(payload['type_of_source'])
+    #print("Line 200 ",request.user)
+
     #After the evaluation process,the solution should be automatically
     #added to the database
-
-
-
-    print(payload['type_of_source'])
-    print("Line 200 ",request.user)
-
     new_problem_solution = ProblemSolution.objects.create(
         problem = Problem.objects.get(pk=payload['problem_id']),
         author = request.user,
@@ -270,7 +308,7 @@ def addUser(request):
         last_name=payload['last_name']
     );
     new_user.save()
-    #Create abd save token object for token authentication
+    #Create and save token object for token authentication
     token = Token.objects.create(user=new_user)
     token.save()
     #Create and save user profile

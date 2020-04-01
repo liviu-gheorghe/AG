@@ -1,0 +1,13 @@
+.problem_info_table td:nth-child(1)
+{
+    width : 25%;
+}
+.problem_info_table td:nth-child(1) span 
+{
+    font-size: 40px;
+    color : purple; 
+}
+.problem_info_table td 
+{
+   text-align: center;
+}

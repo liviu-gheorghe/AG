@@ -1,0 +1,67 @@
+.editor_option
+{
+    text-align: center;
+    display: flex;
+    font-size: 40px;
+    justify-content: center;
+    align-items: center;
+}
+.editor_option span
+{
+    cursor: pointer;
+    transition: all .15s ease-in;
+}
+
+#page_wrapper a
+{
+    color : #000;
+
+}
+#page_wrapper td
+{
+    vertical-align: middle;
+}
+.source_info_table td
+{
+    text-align: center;
+}
+.source_info_table td:nth-child(1) span
+{
+    font-size: 40px;
+    color : purple;
+}
+.source_info_table td:nth-child(1)
+{
+    width : 25%;
+}
+.problem_info_table td:nth-child(1)
+{
+    width : 25%;
+}
+.problem_info_table td:nth-child(1) span 
+{
+    font-size: 40px;
+    color : purple; 
+}
+.problem_info_table td 
+{
+   text-align: center;
+   vertical-align: middle;
+}
+
+.editor_option span:hover
+{
+    color : #28a745;
+}
+
+.editor_options_wrapper
+{
+    height:600px;
+}
+@media only screen and (max-width:991px)
+{
+    .editor_options_wrapper
+    {
+        height:80px;
+    }
+}

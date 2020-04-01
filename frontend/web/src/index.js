@@ -9,7 +9,7 @@ import ProblemPage from "./ProblemPage";
 import ProblemsList from './ProblemsList';
 import Signup from './Signup';
 import UserPage from './UserPage';
-
+import ProblemSolutionPage from './ProblemSolutionPage';
 
 const Page_404 = () => {
     return <h1>Error 404 Page Not Found</h1>
@@ -24,6 +24,7 @@ const router = (
             <Route exact path="/probleme/" component={ProblemsList} />
             <Route exact path="/probleme/:problem_id" component={ProblemPage} />
             <Route exact path="/utilizatori/:username" component={UserPage} />
+            <Route exact path="/solutii_probleme/:solution_id" component={ProblemSolutionPage} />
             <Route component={Page_404} />
         </Switch>
     </BrowserRouter>

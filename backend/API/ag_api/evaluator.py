@@ -30,13 +30,14 @@ def execute(data_object,worker_type):
     '''
 
     json_str = json.dumps(data_object)
+    print(json_str)
     proc = subprocess.run(
         [
             "lxc", 
             "exec",
             "my-ubuntu", 
             "--", "sudo", 
-            "--login", 
+            "--login",
             "--user", 
             "liviu", 
             "/workers/{}_worker.py".format(worker_type), 

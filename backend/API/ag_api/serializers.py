@@ -26,13 +26,18 @@ class UserSerializer(serializers.ModelSerializer):
         'last_login',
         'userprofile',
         ]
-        extra_kwargs = {'password': {'required': True}}
 
-    def create(self, validated_data):
-        user = User.objects.create(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+class UserSmallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'username',
+        ]
+
+
 
 
 
@@ -49,44 +54,6 @@ class SnippetSerializer(serializers.ModelSerializer):
         fields = [
             'content',
             'public',
-        ]
-
-
-
-#Serializer used for listing problem solution
-class ProblemSolutionListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProblemSolution
-        fields = [
-            'id',
-            'problem',
-            'author',
-            'source_type',
-            'score',
-            'datetime_posted',
-            'date_posted',
-            'time_posted',
-            'is_recent',
-            'is_recent_date_posted'
-        ]
-
-
-
-class ProblemSolutionDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProblemSolution
-        fields = [
-            'id',
-            'problem',
-            'author',
-            'source_text',
-            'source_type',
-            'score',
-            'datetime_posted',
-            'date_posted',
-            'time_posted',
-            'is_recent',
-            'is_recent_date_posted'
         ]
 
 
@@ -140,4 +107,57 @@ class ProblemSmallSerializer(serializers.ModelSerializer):
             'tags',
         ]
 
+class ProblemDetailsSerializer(serializers.ModelSerializer):
+    author = UserSmallSerializer(many=False)
+    class Meta:
+        model = Problem
+        fields = [
+            'id',
+            'name',
+            'tags',
+            'difficulty',
+            'level',
+            'date_posted',
+            'author',
+            'memory_limit',
+            'time_limit',
+            'source',
+        ]
 
+
+#Serializer used for listing problem solution
+class ProblemSolutionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemSolution
+        fields = [
+            'id',
+            'problem',
+            'author',
+            'source_type',
+            'score',
+            'datetime_posted',
+            'date_posted',
+            'time_posted',
+            'is_recent',
+            'is_recent_date_posted'
+        ]
+
+
+class ProblemSolutionDetailSerializer(serializers.ModelSerializer):
+    problem = ProblemDetailsSerializer(many=False)
+    author = UserSmallSerializer(many=False)
+    class Meta:
+        model = ProblemSolution
+        fields = [
+            'id',
+            'problem',
+            'author',
+            'source_text',
+            'source_type',
+            'score',
+            'datetime_posted',      
+            'date_posted',
+            'time_posted',
+            'is_recent',
+            'is_recent_date_posted'
+        ]

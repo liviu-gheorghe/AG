@@ -9,10 +9,14 @@ import {
     Modal ,
     Table,
     Card,
+    Badge,
+    Tab,
+    Nav,
 } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import Header from './components/Header';
 //import Page404 from './components/Page404';
+import {ProblemDetailsTable} from './ProblemSolutionPage';
 import './ProblemPage.css';
 //Ace editor imports
 import AceEditor from "react-ace";
@@ -20,6 +24,158 @@ import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/webpack-resolver";
 import 'brace/ext/language_tools';
+
+
+function Sonnet(props) {
+    return <p>
+        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+                     Lorem ipsum dolor sit amet et consecteur adipiscit
+         Lorem ipsum dolor sit amet et consecteur adipiscit
+          Lorem ipsum dolor sit amet et consecteur adipiscit
+           Lorem ipsum dolor sit amet et consecteur adipiscit
+            Lorem ipsum dolor sit amet et consecteur adipiscit
+             Lorem ipsum dolor sit amet et consecteur adipiscit
+    </p>
+}
+
 
 
 class EvaluationModal extends React.Component {
@@ -200,7 +356,7 @@ class ProblemPage extends React.Component {
     fetchProblemSolutions = () => {
         let problem_id = this.props.match.params.problem_id;
         fetch(
-            `${process.env.REACT_APP_API_URL}/api/problem_solutions/?problem=${problem_id}`,
+            `${process.env.REACT_APP_API_URL}/api/problem_solutions/?author=self&problem=${problem_id}`,
             {
                 method: 'get',
                 headers: {
@@ -342,6 +498,11 @@ class ProblemPage extends React.Component {
                 });
             }
         )
+
+    
+        //update the solutions list
+        //this.fetchProblemSolutions();
+    
     }
               
     componentWillMount() {
@@ -376,16 +537,49 @@ class ProblemPage extends React.Component {
                 <div style={{"position": "relative"}}>
                     <Header bgVariant="dark" logged_user={this.props.cookies.get('username')} />
                     <Container>
+
                         <Row className="justify-content-center">
                             <Col xs={12} className="problem_statement_wrapper">
-                                <h2>Descrierea problemei</h2>
-                                <p>{this.state.problem.description}</p>
-                                <h2>Date de intrare </h2>
-                                <p>{this.state.problem.std_input}</p>
-                                <h2>Date de iesire </h2>
-                                <p>{this.state.problem.std_output}</p>
-                                <h2>Restrictii si precizari</h2>
-                                <p>{this.state.problem.restrictions}</p>
+
+                                <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                                    <Row>
+                                        <Col sm={12}>
+                                            <Nav variant="pills" className="justify-content-center">
+                                                <div>
+                                                    <Nav.Link eventKey="first" className="text-center">Descriere</Nav.Link>
+                                                </div>
+                                                <div>
+                                                    <Nav.Link eventKey="second" className="text-center">Explicatii/Indicatii</Nav.Link>
+                                                </div>
+                                                <div>
+                                                    <Nav.Link eventKey="third" className="text-center">Detalii problema</Nav.Link>
+                                                </div>
+                                            </Nav>
+                                        </Col>
+                                        <Col sm={12} className="my-4">
+                                            <Tab.Content>
+                                                <Tab.Pane eventKey="first">
+                                                    <h2 className="text-primary"><Badge variant="primary" className="p-2">{this.state.problem.name}</Badge></h2>
+                                                    <h2>Descrierea problemei</h2>
+                                                    <p>{this.state.problem.description}</p>
+                                                    <h2>Date de intrare </h2>
+                                                    <p>{this.state.problem.std_input}</p>
+                                                    <h2>Date de iesire </h2>
+                                                    <p>{this.state.problem.std_output}</p>
+                                                    <h2>Restrictii si precizari</h2>
+                                                    <p>{this.state.problem.restrictions}</p>
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="second">
+                                                    <Sonnet />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="third">
+                                                <ProblemDetailsTable problem={this.state.problem}/>
+                                                </Tab.Pane>
+                                            </Tab.Content>
+                                        </Col>
+                                    </Row>
+                                </Tab.Container>
+
                             </Col>
                             <Row
                                 className="justify-content-center languages_list_wrapper noselect"
@@ -430,7 +624,15 @@ class ProblemPage extends React.Component {
                                     }}
                                 />
                                 <p className="text-center">
-                                    <Button id="send_solution_button" onClick={this.state.unauthorized ? this.denySending : this.sendSolution}>Trimite solutia</Button>
+                                    <Button 
+                                    id="send_solution_button" 
+                                    onClick={
+                                        this.state.unauthorized ? this.denySending : this.sendSolution
+                                    }
+                                    >
+                                        <span>Trimite solutia </span>
+                                        <FontAwesome name="upload"/>
+                                    </Button>
                                 </p>
                             </Col>
                         </Row>
@@ -461,6 +663,9 @@ class ProblemPage extends React.Component {
                                                             margin: 'auto',
                                                         }
                                                     }
+                                                    onClick = {() => {
+                                                        window.location.href = `/solutii_probleme/${solution.id}`
+                                                    }}
                                                 >
                                                     <Card.Header>Solutia #{solution.id}</Card.Header>
                                                     <Card.Body className="text-center">

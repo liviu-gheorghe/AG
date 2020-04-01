@@ -64,7 +64,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return '{}\'s Profile'.format(self.user.__str__())
-
+0
 
 class Snippet(models.Model):
     '''

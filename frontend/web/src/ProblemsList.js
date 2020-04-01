@@ -15,6 +15,7 @@ import
     InputGroup,
     FormControl,
     Pagination,
+    Spinner,
     Badge,
     } 
     from 'react-bootstrap';
@@ -48,6 +49,7 @@ class ProblemsList extends React.Component {
             problems_list : [],
             problems_per_page : 30,
             fetch_type : '',
+            fetch_pending : false,
             query_parameters: {
                 'name': '',
                 'id': '',
@@ -58,9 +60,12 @@ class ProblemsList extends React.Component {
     }
 
     fetchProblems = () => {
+
+
+        console.log(process.env.REACT_APP_API_URL);
         // fetch problems according to the options given by the user(if any)
 
-
+        this.setState({fetch_pending:true});
         let start_index = 0;
         let end_index = this.state.problems_per_page;
         if(this.state.fetch_type=='append')
@@ -101,11 +106,13 @@ end=${end_index}
                             problems_list : current_problems_list.concat(resp)
                         })
                     }
+                    this.setState({fetch_pending:false});
                 }
             )
             .catch(
                 (err) => {
                     console.log(err.message);
+                    this.setState({ fetch_pending: false });
                 }
             )
     }
@@ -168,8 +175,9 @@ end=${end_index}
     componentDidMount() {
         this.setState({
             fetch_type: 'append'
+        }, () => {
+            this.fetchProblems()
         })
-        this.fetchProblems()
     }
 
 
@@ -202,7 +210,7 @@ end=${end_index}
                                            <Button variant="outline-secondary" onClick={ this.searchByQueryParams }>Cautare</Button>
                                </InputGroup.Append>
                            </InputGroup>
-                       </Col>             
+                       </Col>       
                     {
                         this.state.problems_list.map(
                             (problem,index) => {
@@ -272,14 +280,26 @@ end=${end_index}
                             }
                         )
                     }
-                    <Col xs={12} className="text-center my-4">
-                        <Button
-                        variant="success"
-                        onClick = { this.loadNextProblems }
-                        >
-                            Incarca mai multe <FontAwesome name="hourglass"/>
-                        </Button>
-                    </Col>
+                    {
+                        this.state.fetch_pending ? (
+                            <Col xs={12} className="text-center">
+                                <Spinner animation="grow" />
+                                <Spinner animation="grow" />
+                                <Spinner animation="grow" />
+                                
+                            </Col>
+                            ) : 
+                            (
+                            <Col xs={12} className="text-center my-4">
+                                <Button
+                                    variant="success"
+                                    onClick={this.loadNextProblems}
+                                >
+                                    Incarca mai multe <FontAwesome name="hourglass" />
+                                </Button>
+                            </Col>                                
+                            )
+                    }
                 </Row>
                 </Col>
                 <Col xs={12} xl={2}>

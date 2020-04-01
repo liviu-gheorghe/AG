@@ -1,11 +1,29 @@
-#!/usr/bin/python3.7
+#!/bin/python3
 import json,subprocess,sys,os
 from timeit import default_timer
+
+# This worker program is executed in an Alpine Evaluation Container
+#The worker creates a .cpp file on the system and tries 
+#to compile it using GNU GCC compiler
+#If the compilation process doesn't succed, then the 
+#response of the worker will contain a compilation 
+#error message
+
+
+#Otherwise,the worker creates the executable file,
+#and iterates through all the input sets provided 
+#in the json string and calls the generated executable 
+#injecting the required input in its stdin pipe
+#Each execution of the generated executable is allowed 
+#to take only a specified limited amount of time 
+#that is also provided in the json string
 
 
 #If the compilation process takes too much
 #then throw a TimeoutExpired execption
-COMPILATION_TIME_LIMIT = 0.5
+
+# 3 seconds should be fine
+COMPILATION_TIME_LIMIT = 3.00
 
 
 #Function that creates a file and 
@@ -18,6 +36,8 @@ def writeToFile(file,input):
 
 #Collect json data
 json_str = sys.argv[1]
+#print(json_str)
+#exit()
 #Convert json to dicitionary
 obj = json.loads(json_str)
 #Set provided execution time limit 
@@ -51,7 +71,7 @@ except subprocess.TimeoutExpired:
 
 #Remove file from filesystem
 
-os.remove("{}.cpp".format(filename))
+#os.remove("{}.cpp".format(filename))
 
 if proc.stderr:
 	RESPONSE = {}
