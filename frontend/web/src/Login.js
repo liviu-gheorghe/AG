@@ -7,17 +7,11 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            login_view : true,
             credentials : {},
             error_msg : null,
         }
     }
 
-    toggleForm = () => {
-        this.setState({
-            login_view: !this.state.login_view,
-        });
-    }
 
     updateFormData = event => {
         let cred = this.state.credentials;
@@ -61,21 +55,13 @@ class Login extends React.Component {
                 )
     }
 
-    sendSignUpData = () => {
-        console.log("Data will be sent");
-        console.log(JSON.stringify(this.state.credentials));
-    }
 
     render () {
         return (
             <Container fluid>
                 <Row className="login-modal justify-content-center align-items-center">
                     <Col xs={12} sm={10} lg={6}>
-                        {this.state.login_view ? (
-                            <LoginPanel toggle={this.toggleForm} updateData={this.updateFormData} sendLoginData={this.sendLoginData} error_msg={this.state.error_msg}/>           
-                        ) : (
-                                <RegisterPanel toggle={this.toggleForm} updateData={this.updateFormData} sendSignUpData={this.sendSignUpData}/> 
-                        )}
+                        <LoginPanel toggle={this.toggleForm} updateData={this.updateFormData} sendLoginData={this.sendLoginData} error_msg={this.state.error_msg} />
                     </Col>
 
 
@@ -83,65 +69,29 @@ class Login extends React.Component {
             </Container>            
         );
     }
-    /**
-    <Col xs={12} sm={12} lg={8}>
-         <div className="login-image text-center">
-            <img src="/login_page_image.jpg" alt="" />
-                <p className="welcome-message">
-                    Bine ai (re)venit !
-                </p>
-        </div>
-    </Col>
-    **/
 }
 
 class LoginPanel extends React.Component {
     render() {
         return (
             <div className="login-form">
-                <p className="form-title">Login</p>
+                <p className="form-title">Intra in cont</p>
                 <div>
-                    <input type="username" name="username" placeholder="Username" required={true} onChange={this.props.updateData}/>
+                    <input type="username" name="username" placeholder="Nume de utilizator" required={true} onChange={this.props.updateData}/>
                 </div>
                 <div>
-                    <input type="password" name="password" placeholder="Password" required={true} onChange={this.props.updateData}  />
+                    <input type="password" name="password" placeholder="Parola" required={true} onChange={this.props.updateData}  />
                 </div>
                 <div>
-                    <button className="login-button" onClick={this.props.sendLoginData}>Login</button>
+                    <button className="login-button" onClick={this.props.sendLoginData}>Logare</button>
                 </div>
                 {
                     this.props.error_msg ? (
                     <p className="text-danger">{this.props.error_msg}</p>
                     ) : (
-                        <p className = "toggle-form" onClick = {this.props.toggle}>Don't have an account?</p>
+                        <p className = "toggle-form" onClick = {() => window.location.href="/inregistrare" }>Inregistrare</p>
                     )
                 }
-            </div>
-        );
-    }
-}
-
-class RegisterPanel extends React.Component {
-    render() {
-        return (
-            <div className="login-form">
-                <p className="form-title">Sign up</p>
-                <div>
-                    <input type="username" name="username" placeholder="Username" onChange={this.props.updateData}/>
-                </div>
-                <div>
-                    <input type="text" name="email_adress" placeholder="Email adress" />
-                </div>                
-                <div>
-                    <input type="password" name="password" placeholder="Password" onChange={this.props.updateData}/>
-                </div>
-                <div>
-                    <input type="password" name="password_confirm" placeholder="Confirm password" />
-                </div>
-                <div>
-                    <button className="login-button" onClick={this.props.sendSignUpData}>Sign Up</button>
-                </div>
-                <p className="toggle-form" onClick={this.props.toggle}>Already have an account?</p>
             </div>
         );
     }

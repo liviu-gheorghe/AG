@@ -57,6 +57,16 @@ class SnippetSerializer(serializers.ModelSerializer):
         ]
 
 
+class ProblemTopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemTopic
+        fields = [
+        'name', 
+        'description',
+        'difficulty', 
+        'problems_available_count'
+        ]
+
 class ProblemSerializer(serializers.ModelSerializer):
     author = UserSerializer(many=False)
     class Meta:
@@ -74,6 +84,7 @@ class ProblemSerializer(serializers.ModelSerializer):
             'date_posted',
             'author',
             'memory_limit',
+            'explanations_and_indications',
             'time_limit',
             'source',
         ]

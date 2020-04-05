@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './components/Header';
+import PageScroller from './components/PageScroller';
 import { withCookies } from 'react-cookie';
 import 
     {
@@ -55,7 +56,8 @@ class ProblemsList extends React.Component {
                 'id': '',
                 'tag': '',
                 'difficulty': '',
-            }
+                'topic': this.props.match.params.topic_name ? this.props.match.params.topic_name : '',
+            },
         }
     }
 
@@ -80,6 +82,7 @@ class ProblemsList extends React.Component {
 /api/problems/?\
 name=${this.state.query_parameters['name'].trim()}&\
 tag=${this.state.query_parameters['tag'].trim()}&\
+topic=${this.state.query_parameters['topic'].trim()}&\
 difficulty=${this.state.query_parameters['difficulty'].trim()}&\
 start=${start_index}&\
 end=${end_index}
@@ -121,7 +124,8 @@ end=${end_index}
     //https://stackoverflow.com/questions/36085726/why-is-setstate-in-reactjs-async-instead-of-sync
 
 
-    // As setState is async, add the p
+    // As setState is async, use fetchProblems 
+    // as a callback
     loadNextProblems = () => {
         this.setState({
             fetch_type : 'append'
@@ -178,23 +182,24 @@ end=${end_index}
         }, () => {
             this.fetchProblems()
         })
+
+
     }
-
-
     DIFFICULTY_COLOR = {
-        'elementar': '##007bff',
+        'elementar': '#007bff',
         'usor': '#28a745',
         'intermediar': '#6f42c1',
         'dificil': '#dc3545',
     }
 
    render () {
+       console.log(this.state.problems_list);
        return (
            <>
             <Header logged_user={this.props.cookies.get('username')} />
             <Container fluid className="problems_list_page">
                 <Row>
-                <Col xs={12} xl={2}>
+                <Col xs={12} xl={2} style={{display:'flex'}}>
                 </Col>
                 <Col xs={12} xl={8}>
                 <Row className="align-items-center">
@@ -210,7 +215,23 @@ end=${end_index}
                                            <Button variant="outline-secondary" onClick={ this.searchByQueryParams }>Cautare</Button>
                                </InputGroup.Append>
                            </InputGroup>
-                       </Col>       
+                            <div
+                            style={{
+                                display:'flex',
+                                alignItems:'center',
+                                cursor:'pointer'
+
+                            }}
+                                onClick = {
+                                    () => {
+                                        window.location.href = "/probleme/categorii/";
+                                    }
+                                }
+                            >
+                                <span>Categorii</span>
+                                    <FontAwesome name="list-alt" style={{ fontSize: '35px', margin: '0px 5px' }} />
+                            </div>
+                       </Col>
                     {
                         this.state.problems_list.map(
                             (problem,index) => {
@@ -305,7 +326,8 @@ end=${end_index}
                 <Col xs={12} xl={2}>
 
                 </Col>
-            </Row>              
+            </Row>
+            <PageScroller />
             </Container>
            </>
        );

@@ -12,7 +12,6 @@ from rest_framework.decorators import api_view, permission_classes
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 import requests,json,subprocess,os,requests
-from .evaluator import execute as exc
 
 
 #Viewset used for user
@@ -43,6 +42,14 @@ class LanguageViewSet(viewsets.ModelViewSet):
     queryset = Language.objects.all()
     permission_classes = (AllowAny,)
     #authentication_classes = (TokenAuthentication,)
+
+
+class ProblemTopicViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
+    serializer_class = ProblemTopicSerializer
+    queryset = ProblemTopic.objects.order_by('difficulty').all()
+    permission_classes = (AllowAny,)
+
 
 
 class ProblemViewSet(viewsets.ModelViewSet):
@@ -80,18 +87,20 @@ class ProblemViewSet(viewsets.ModelViewSet):
                 kwargs['tags__icontains'] = urlparams.get('tag')
             if urlparams.get('difficulty'):
                 kwargs['difficulty__in'] = urlparams.getlist('difficulty')
+            if urlparams.get('topic'):
+                kwargs['topic__name__in'] = urlparams.getlist('topic')
 
 
         # By default , get only the few first records
         index_start = 0
-        index_end = 5
+        index_end = 30
         if urlparams.get('start'):
             index_start = int(urlparams['start'])
         if urlparams.get('end'):
             index_end = int(urlparams['end'])
         #Slice the querydict only when listing
         if self.action == 'list':
-            return Problem.objects.order_by('-id').filter(**kwargs)[index_start:index_end]
+            return Problem.objects.order_by('-datetime_posted').filter(**kwargs)[index_start:index_end]
         else:
              return Problem.objects.order_by('-id').filter(**kwargs)
 

@@ -1,6 +1,6 @@
 import  React  from 'react';
 import {Table,Badge} from 'react-bootstrap';
-import {FontAwesome} from 'react-fontawesome';
+import FontAwesome from 'react-fontawesome';
 import './ProblemDetailsTable.css';
 
 class ProblemDetailsTable extends React.Component {

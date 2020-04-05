@@ -9,7 +9,7 @@ class Header extends React.Component {
         super(props);
         this.state = {
             links : {},
-            language : 'ro',
+            language: props.language ? props.language : 'ro',
         }
     }
     logOut = () =>
@@ -30,7 +30,7 @@ class Header extends React.Component {
     render () {
         return (
             <Navbar 
-            className="navbar" 
+            className="navbar"
             variant="dark"
             bg = {
                 this.props.bgVariant ? this.props.bgVariant : "dark"
@@ -80,7 +80,7 @@ class Header extends React.Component {
                                 </NavDropdown>
                             
                         ) : (
-                                <Nav.Link href="/login">Login</Nav.Link>
+                                <Nav.Link href="/logare">Logare</Nav.Link>
                         )
                     }
                     </Nav>

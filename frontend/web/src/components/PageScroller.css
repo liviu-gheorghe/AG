@@ -1,0 +1,29 @@
+.scroll_to_top
+{
+    position: fixed;
+    height:50px;
+    width: 50px;
+    border-radius: 10px;
+    background-color: #28a745;
+    bottom:10px;
+    right:10px;
+    display: flex;
+    cursor: pointer;
+    transition: all .2s ease-in;
+}
+.scroll_to_top:hover
+{
+    background-color: rgb(24, 114, 45);
+}
+.scroll_to_top span
+{
+    font-size: 35px;
+    margin: auto;
+    color : #fff;
+
+}
+
+.hidden
+{
+    display: none;
+}

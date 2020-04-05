@@ -1,0 +1,14 @@
+.lab_card
+{
+    cursor:pointer;
+    transition: all .2s ease-in;
+}
+.lab_card:hover
+{
+    transform: scale(1.025);
+}
+.lab_image
+{
+    object-fit: cover;
+    height: 250px;
+}

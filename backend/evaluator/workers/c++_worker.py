@@ -71,7 +71,7 @@ except subprocess.TimeoutExpired:
 
 #Remove file from filesystem
 
-#os.remove("{}.cpp".format(filename))
+os.remove("{}.cpp".format(filename))
 
 if proc.stderr:
 	RESPONSE = {}

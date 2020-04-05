@@ -1,20 +1,10 @@
 import React  from 'react';
 import { withCookies } from 'react-cookie';
-import {
-    Container, 
-    Row, 
-    Col, 
-    Button, 
-    Spinner, 
-    Modal ,
-    Table,
-    Card,
-    Badge,
-    Tab,
-    Nav,
-} from 'react-bootstrap';
+import PageScroller from './components/PageScroller';
+import {Container,Row,Col,Button,Card,Badge,Tab,Nav} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import Header from './components/Header';
+import ProblemEvaluationModal from './components/ProblemEvaluationModal';
 //import Page404 from './components/Page404';
 import {ProblemDetailsTable} from './ProblemSolutionPage';
 import './ProblemPage.css';
@@ -25,279 +15,26 @@ import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/webpack-resolver";
 import 'brace/ext/language_tools';
 
+import {capitalizeString} from './utils/core';
+
 
 function Sonnet(props) {
     return <p>
-        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit        Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
-                     Lorem ipsum dolor sit amet et consecteur adipiscit
-         Lorem ipsum dolor sit amet et consecteur adipiscit
-          Lorem ipsum dolor sit amet et consecteur adipiscit
-           Lorem ipsum dolor sit amet et consecteur adipiscit
-            Lorem ipsum dolor sit amet et consecteur adipiscit
-             Lorem ipsum dolor sit amet et consecteur adipiscit
+        {props.text}
     </p>
 }
 
-
-
-class EvaluationModal extends React.Component {
- 
-	//Utility that checks if two strings are equal
-	areStringsEqual = (str1, str2) => {
-    if(str1 === undefined) return false;
-	return !str1.localeCompare(str2);
-	}
- 
-	render() {
-		return (
-		<>
-		<Modal
-		size="xl"
-		show={true}
-		>
-			<Container fluid id="loading_overlay">
-                <Row className="justify-content-center align-items-center">
-                    <Col xs={12} md={12} lg={12} id="loaders">
-                        <>
-                            {
-                                this.props.eval_state.source_pending ? (
-                                    [...Array(5)].map((val, i) => {
-                                    return (
-                                    <Spinner key={i} animation="grow" />)
-                                    })
-                                    ) : ('')
-                            }
-                        </>
-                        <div id="evaluation_message">
-                            <p>
-                                {
-                                    this.props.eval_state.source_pending ? ("In curs de evaluare") : ("Evaluare finalizata")
-                                }
-                            </p>
-                        </div>
-                        <div className="task_info">
-                            {
-                                this.props.eval_state.runtime_err ? (
-                                    <p>
-                                        {
-                                            this.props.eval_state.runtime_err
-                                        }
-                                    </p>
-                                ) : (
-                                        <>
-                                            <Table bordered>
-                                                <tbody>
-                                                    {
-                                                        this.props.eval_state.evaluation_info.map(
-                                                            (task, index) => {
-                                                                if (task['compilation_error'])
-                                                                    return (
-                                                                        <tr key={index}>
-                                                                            <td className="text-danger">
-                                                                                {task['compilation_error']}
-                                                                            </td>
-                                                                        </tr>
-                                                                    )
-                                                                else
-                                                                    return (
-                                                                        <tr key={index} className={
-                                                                            (this.areStringsEqual(task['status'],"OK")) ? "bg-success" : "bg-danger"
-                                                                        }>
-                                                                            <td>Test {index + 1}</td>
-                                                                            <td>{task['status']}</td>
-                                                                            <td>
-                                                                                {
-                                                                                     task['stderr'] ? task['stderr'] : '-'
-                                                                                }
-                                                                            </td>
-                                                                            <td>{task['time']}</td>
-                                                                            <td>{task['returncode']}</td>
-                                                                        </tr>
-                                                                    )
-                                                            }
-                                                        )
-                                                    }
-                                                </tbody>
-                                            </Table>
-                                            {
-                                                this.props.eval_state.overall_score !== null ? (
-                                                    <div>Scor : {this.props.eval_state.overall_score} p</div>
-                                                ) : 
-                                                ('')
-                                            }
-                                        </>
-                                    )
-                            }
-                        </div>
-                    </Col>
-                </Row>
-                <Row className="justify-content-center align-items-center">
-                    <Col xs={12}>
-                        {
-                            this.props.eval_state.source_pending ?
-                            ('') : (
-                                <p className="text-center p-4">
-                                    <Button variant="outline-primary" onClick={() => { this.props.hideOverlay() }}>OK</Button>
-                                </p>
-                            )
-                        }
-                    </Col>
-                </Row>
-			</Container>
-		</Modal>
-		</>
-		);
-	}
-}
          
 class ProblemPage extends React.Component {
           
     // Ace modes used for text editor highlighting
     ACE_MODES = {
-    "C++"        : "c_cpp",
-    "C"          : "c_cpp",
-    "Java"       : "java",
-    "Python"     : "python",
-    "JavaScript" : "javascript",
-    'Ruby'       : "ruby",
+    "c++"        : "c_cpp",
+    "c"          : "c_cpp",
+    "java"       : "java",
+    "python"     : "python",
+    "javaScript" : "javascript",
+    'ruby'       : "ruby",
     }
           
     constructor(props) {
@@ -378,19 +115,19 @@ class ProblemPage extends React.Component {
             }
         )
         .then(
-            (resp) => 
+            (resp) =>
                 {
                     if(this.state.unauthorized === false)
                     {
                     console.log(resp)
-                    console.log("Setting up problems");
+                    //console.log("Setting up problems");
                     this.setState({
                         problem_solutions : resp
                     })
                     }
                     else 
                     {
-                        console.log("It seems that you're not authorized");
+                       // console.log("It seems that you're not authorized");
                     }
                 }
         )
@@ -416,6 +153,7 @@ class ProblemPage extends React.Component {
         })
         .catch(err => {console.log(err)})
     }
+
     toggleSelectedLanguage = lang => {
         this.updateSourceText(lang.default_snippet);
         this.setState({
@@ -470,11 +208,14 @@ class ProblemPage extends React.Component {
             }
         )
         .then(
-            resp => resp.json()
+            resp => {
+                console.log(resp.status);
+                return resp.json();
+            }
         )
         .then(
             resp_json => {
-                //console.log(resp_json);
+                console.log(resp_json);
                 this.setState({
                         evaluation: {
                             source_pending: false,
@@ -493,21 +234,13 @@ class ProblemPage extends React.Component {
                     evaluation: {
                         source_pending: false,
                         evaluation_overlay: true,
-                        evaluation_info: ["DE ACORD"],
+                        evaluation_info: [],
                     },
                 });
             }
         )
-
-    
-        //update the solutions list
-        //this.fetchProblemSolutions();
-    
     }
-              
-    componentWillMount() {
 
-    }
     componentDidMount () {
         // fetch problem data from the API 
         this.fetchProblemData(this.props.match.params.problem_id);
@@ -518,12 +251,10 @@ class ProblemPage extends React.Component {
 
 
         if (!this.props.cookies.get('auth_token')) {
-            console.log("AICI");
             this.setState({
                 unauthorized: true,
             })
         }
-        else console.log(this.props.cookies.get('auth_token'));
 
 
         if (!this.state.unauthorized) {
@@ -537,7 +268,6 @@ class ProblemPage extends React.Component {
                 <div style={{"position": "relative"}}>
                     <Header bgVariant="dark" logged_user={this.props.cookies.get('username')} />
                     <Container>
-
                         <Row className="justify-content-center">
                             <Col xs={12} className="problem_statement_wrapper">
 
@@ -567,10 +297,10 @@ class ProblemPage extends React.Component {
                                                     <h2>Date de iesire </h2>
                                                     <p>{this.state.problem.std_output}</p>
                                                     <h2>Restrictii si precizari</h2>
-                                                    <p>{this.state.problem.restrictions}</p>
+                                                    <div>{this.state.problem.restrictions}</div>
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="second">
-                                                    <Sonnet />
+                                                    <Sonnet text={this.state.problem.explanations_and_indications}/>
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="third">
                                                 <ProblemDetailsTable problem={this.state.problem}/>
@@ -595,7 +325,7 @@ class ProblemPage extends React.Component {
                                                     }
                                                     onClick={() => { this.toggleSelectedLanguage(lang) }}
                                                 >
-                                                {lang.name}
+                                                {capitalizeString(lang.name)}
                                                 </span>
                                             );
                                         }
@@ -674,7 +404,7 @@ class ProblemPage extends React.Component {
                                                                 Tip : {solution.source_type}
                                                             </p>
                                                             <p>
-                                                                Punctaj : {solution.score} pct
+                                                                Punctaj : {solution.score} puncte
                                                             </p>
                                                             <p>
                                                                 Incarcat :<br/>
@@ -701,14 +431,11 @@ class ProblemPage extends React.Component {
                         </Row>                                
                             )
                         }
-
+                        <PageScroller />
                     </Container>
                     {
                         (this.state.evaluation.evaluation_overlay) ? (
-                            <EvaluationModal 
-                                eval_state={this.state.evaluation}
-                                hideOverlay = {this.closeOverlay}
-                            />
+                            <ProblemEvaluationModal  eval_state={this.state.evaluation} hideOverlay = {this.closeOverlay} />
                         ) :
                         (<> </>)
                     }

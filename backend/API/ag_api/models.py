@@ -143,6 +143,41 @@ class Language(models.Model):
         return self.name
 
 
+
+class ProblemTopic(models.Model):
+    '''
+    Model used for representing topics for the 
+    problems 
+
+    For example, Graph Theory , Dynamic Programming etc
+
+    A topic has a name, an optinal description 
+    (maybe a short description :D), and a difficulty 
+    (the difficulty of the topic can be used to retrieve 
+    the topic in a relevant topic for the end user)
+    '''
+
+    name = models.TextField(max_length=(1<<5))
+    description = models.TextField(max_length=(1<<16),blank=True)
+    difficulty = models.IntegerField(
+        default=1,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
+    )
+
+    def __str__(self):
+        return self.name
+
+
+    #Returns the number of problems for the topic
+    def problems_available_count(self):
+        return len(self.problem_set.all())
+
+
+
+
 class Problem(models.Model):
     '''
     Model used for representing problems
@@ -151,6 +186,7 @@ class Problem(models.Model):
     FIELD_MAX_LEN = {
         'name' : (1<<5),
         'description' : (1<<16),
+        'explanations_and_indications': (1 << 16),
         'std_input' : (1<<10),
         'std_output' : (1<<10),
         'restrictions' : (1<<10),
@@ -193,6 +229,13 @@ class Problem(models.Model):
     #Problem description
     description = models.TextField(
         max_length=FIELD_MAX_LEN['description']
+    )
+    #Additional information regarding the problem description,
+    #the idea behind the problem solution,additional 
+    #links to information on the topic etc
+    explanations_and_indications = models.TextField(
+        max_length=FIELD_MAX_LEN['explanations_and_indications'],
+        blank=True
     )
 
     #Problem difficulty
@@ -263,6 +306,11 @@ class Problem(models.Model):
         ],
         help_text='seconds'
     )
+
+
+    #The related topic that the problem belongs to 
+
+    topic = models.ForeignKey(to=ProblemTopic,on_delete=models.SET_NULL,null=True)
     
     #The source where the problem was retreived(if it does exist)
     #ex. CS Contensts,Informatics Olympiad etc
@@ -290,6 +338,8 @@ class Problem(models.Model):
 
     def __str__(self):
         return self.name
+
+
 
 
 class ProblemTest(models.Model):
