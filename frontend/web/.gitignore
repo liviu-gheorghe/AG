@@ -25,7 +25,7 @@ yarn-error.log*
 /src/assets
 /public/fontawesome
 
-#dockerfile
 /Dockerfile
 /.env
 /nginx_conf
+/package-lock.json

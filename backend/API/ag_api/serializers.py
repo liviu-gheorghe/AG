@@ -172,3 +172,17 @@ class ProblemSolutionDetailSerializer(serializers.ModelSerializer):
             'is_recent',
             'is_recent_date_posted'
         ]
+
+
+
+
+class LabSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lab
+        fields = '__all__'
+
+
+class LabTaskChoicesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabTaskChoices
+        fields = '__all__'

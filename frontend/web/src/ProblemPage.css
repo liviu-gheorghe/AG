@@ -67,3 +67,9 @@
 {
     background-color: #0069d9 !important;
 }
+.gif_placeholder
+{
+    width:150px;
+    height:150px;
+    border-radius: 50%;
+}

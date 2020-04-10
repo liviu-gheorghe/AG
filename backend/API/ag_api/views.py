@@ -9,7 +9,7 @@ from django.views.decorators.http import require_http_methods
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 import requests,json,subprocess,os,requests
 
@@ -174,6 +174,19 @@ class ProblemSolutionViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 
+
+class LabViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset=Lab.objects.all()
+    serializer_class =  LabSerializer   
+    permission_classes = (AllowAny,)
+
+
+class LabTaskChoicesViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = LabTaskChoices.objects.all()
+    serializer_class = LabTaskChoicesSerializer
+    permission_classes = (AllowAny,)
+
+
 @api_view(['POST',])
 @permission_classes([IsAuthenticated])
 def evaluate(request):
@@ -326,3 +339,9 @@ def addUser(request):
     return HttpResponse()
 
 
+def execute_sql(request):
+    if request.method != 'POST':
+        return HttpResponseBadRequest(
+            "Method {} not allowed".format(request.method)
+        )
+    return HttpResponse("Execute SQL")

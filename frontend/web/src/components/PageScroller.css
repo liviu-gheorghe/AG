@@ -20,8 +20,15 @@
     font-size: 35px;
     margin: auto;
     color : #fff;
+    transition: all .3s ease-in;
+    padding:6px;
 
 }
+.scroll_to_top span:hover
+{
+    transform: rotate(360deg);
+}
+
 
 .hidden
 {

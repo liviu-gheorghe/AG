@@ -3,6 +3,7 @@ import {withCookies} from 'react-cookie';
 import './ProblemSolutionPage.css'
 import {Container,Row,Col,Spinner,Table,Badge} from 'react-bootstrap';
 import Header from './components/Header';
+import {ProblemDetailsTable} from './components/ProblemDetailsTable';
 import FontAwesome from 'react-fontawesome';
 //Ace editor imports
 import AceEditor from "react-ace";
@@ -10,57 +11,6 @@ import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/webpack-resolver";
 import 'brace/ext/language_tools';
-
-
-
-
-export function ProblemDetailsTable (props) {
-        return (
-            <Table striped bordered className="problem_info_table">
-                <caption className="py-2">Detalii problema {props.problem.name}</caption>
-                <tbody>
-                    <tr>
-                        <td><FontAwesome name="layer-group" /></td>
-                        <td>
-                            <Badge variant="secondary" className="p-2">{props.problem.difficulty}</Badge>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><FontAwesome name="crosshairs" /></td>
-                        <td>
-                            {
-                                props.problem.tags.split(",").map(
-                                    (tag, index) => {
-                                        return <Badge key={index} variant="primary" className="p-2 m-2">{tag}</Badge>
-                                    }
-                                )
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><FontAwesome name="calendar" /></td>
-                        <td>
-                            {`${props.problem.date_posted}`}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><FontAwesome name="user" /></td>
-                        <td>{`${props.problem.author.first_name} ${props.problem.author.last_name}`}</td>
-                    </tr>
-                    <tr>
-                        <td><FontAwesome name="clock" /></td>
-                        <td>{props.problem.time_limit} s</td>
-                    </tr>
-                    <tr>
-                        <td><FontAwesome name="memory" /></td>
-                        <td>{props.problem.memory_limit} MB</td>
-                    </tr>
-                </tbody>
-            </Table>
-        );
-}
-
-
 
 
 
@@ -97,11 +47,11 @@ class ProblemSolutionPage extends React.Component {
             })
             .then(
                 (resp) => {
-                        console.log(resp)
-                        this.setState({
-                            solution: resp,
-                            fetch_pending:false,
-                        })
+                    console.log(resp)
+                    this.setState({
+                        solution: resp,
+                        fetch_pending:false,
+                    })
                 }
             )
             .catch(err => {console.log(err); this.setState({network_error:true,fetch_pending:false})})
@@ -116,7 +66,7 @@ class ProblemSolutionPage extends React.Component {
         if(this.state.fetch_pending === false)
         return (
             <>
-                <Header bgVariant="dark" logged_user={this.props.cookies.get('username')} />
+                <Header logged_user={this.props.cookies.get('username')} />
                 {
                     this.state.solution_found ? (
                         <Container fluid id="page_wrapper">
@@ -190,23 +140,16 @@ class ProblemSolutionPage extends React.Component {
                                             </tr>
                                         </tbody>
                                     </Table>
-
-
-
-
-
-
                                     <ProblemDetailsTable problem={this.state.solution.problem} />
                                 </Col>
                             </Row>
                         </Container>
                     ) : (
-                            this.state.network_error ? (
-                                <p>Net err</p>
-                            ) : (
-                                <p>Not found</p>
-                            )
-                        
+                        this.state.network_error ? (
+                            <p>Net err</p>
+                        ) : (
+                            <p>Not found</p>
+                        )
                     )
                 }
             </>

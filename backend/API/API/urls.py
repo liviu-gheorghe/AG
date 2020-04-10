@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from ag_api.views import evaluate,verifyCaptchaView,addUser
+from ag_api.views import evaluate,verifyCaptchaView,addUser,execute_sql
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +26,8 @@ urlpatterns = [
     path('evaluate/', evaluate),
     path('siteverify',verifyCaptchaView),
     path('add_user',addUser),
+    path('execute_sql',execute_sql),
     path('api/', include('ag_api.urls')),
+    path('labs/',include('proxy.urls'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

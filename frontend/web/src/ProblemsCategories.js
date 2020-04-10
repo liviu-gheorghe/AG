@@ -1,9 +1,12 @@
 import React from 'react';
 import './ProblemsCategories.css';
 import {Container,Row,Col,Card,Badge} from 'react-bootstrap';
+import {withCookies} from 'react-cookie';
 import FontAwesome from 'react-fontawesome';
 import PageScroller from './components/PageScroller';
-export default class ProblemsCategories extends React.Component {
+import {ProblemCategoryCard} from './components/Cards';
+import Header from './components/Header';
+class ProblemsCategories extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,6 +35,8 @@ export default class ProblemsCategories extends React.Component {
     render()
     {
         return (
+        <>
+        <Header logged_user={this.props.cookies.get('username')} />
         <Container className="problems_categories_page">
                 <Row>
                     <Col xs={12} className="my-4">
@@ -40,35 +45,15 @@ export default class ProblemsCategories extends React.Component {
                     {
                         this.state.topics_list.map((topic, index) => {
                             return (
-                                <Col key={index} xs={12} md={6} xl={4} className="my-4">
-                                    <Card
-                                    onClick = {
-                                        () => {
-                                            window.location.href = `/probleme/categorii/${topic.name}`;
-                                        }
-                                    }
-                                    >
-                                        <Card.Img className="problem_image" variant="top" src={
-                                            require(`./assets/img/asset003.jpg`)
-                                        } />
-                                        <Card.Body>
-                                            <Card.Title className="text-center">
-                                                {topic.name}
-                                                            </Card.Title>
-                                        </Card.Body>
-                                        <Card.Footer className="text-center">
-                                            <small>
-                                                {topic.problems_available_count} probleme
-                                                            </small>
-                                        </Card.Footer>
-                                    </Card>
-                                </Col>
+                                <ProblemCategoryCard topic={topic} img_src={'asset003.jpg'}/> 
                             );
                         })
                     }
                 </Row>
             <PageScroller />
         </Container>
+        </>
         );
     }
 }
+export default  withCookies(ProblemsCategories);

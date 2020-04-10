@@ -6,6 +6,8 @@ FROM ubuntu:18.04
 RUN apt-get update && \
 apt-get install -y nginx \
 python3 \
+python-dev \
+libpq-dev \
 python3-pip && \
 pip3 install \
 djangorestframework \
@@ -13,6 +15,9 @@ django-cors-headers \
 requests \
 Pillow \
 uwsgi 
+
+
+RUN easy_install psycopg2
 
 
 #Copy nginx configuration file

@@ -52,7 +52,7 @@ class UserPage extends React.Component
     render() {
         return (
             <>
-            <Header bgVariant="dark" logged_user={this.props.cookies.get("username")}></Header>
+            <Header logged_user={this.props.cookies.get("username")}></Header>
             <Container className="user_page_wrapper">
                 <Row className="my-2 align-items-center justify-content-center">
                     <Col xs={12} md={6} className="user_profile_image_wrapper my-2">

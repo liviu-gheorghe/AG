@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator,MaxValueValidator
 import datetime
 from math import floor
@@ -64,7 +65,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return '{}\'s Profile'.format(self.user.__str__())
-0
+
 
 class Snippet(models.Model):
     '''
@@ -479,3 +480,99 @@ class ProblemSolution(models.Model):
                 "on %d/%m/%Y at %H:%M:%S"
             )
         )
+
+
+
+class Lab(models.Model):
+    '''
+    Model used for representing `live labs` information
+    for different topics: Linux Operating 
+    System,Web Development,Programming Languages
+    etc.
+    This model holds essential data related to the 
+    lab like lab name,
+    description,covered informations,level of difficulty
+
+    The actual lab contents will be split into 
+    `Lab Tasks` that will respresent another model
+    :this model will describe the task that should be 
+    perfomed, the expected result etc. 
+
+
+
+    For a more interactive learning experience, the labs 
+    can be combined toghether with tutorials, for example 
+    after a specific part of a  tutorial , a specific task of a 
+    specific lab should be completed
+    '''
+
+    FIELD_MAX_LEN = {
+        'name':(1<<6),
+        'short_description':(1<<7),
+        'description':(1<<16),
+        'category':(1<<5),
+    }
+
+    name = models.TextField(max_length=FIELD_MAX_LEN['name'])
+    short_description = models.TextField(max_length=FIELD_MAX_LEN['short_description'])
+    description = models.TextField(max_length=FIELD_MAX_LEN['description'])
+    category = models.TextField(max_length=FIELD_MAX_LEN['category'])
+
+    def __str__(self):
+        return self.name
+
+
+class LabTaskChoices(models.Model):
+    '''
+    Model used for representing 'choices' lab tasks.
+    This kind of lab task has multiple answer choices 
+    and has zero,one or more correct responses.
+    According to the related lab, the task can be 'interactive'
+    or not. A task is considered interactive when the lab 
+    has an attached terminal emulator, that is connected to 
+    a real Linux System, represented by a Docker container.
+
+    When this happens, the lab task should perform some
+    actions in the container to prepare the environment for specific user 
+    interactions.
+    For example, in an 'Introductory Linux OS Lab' an 'interactive' task 
+    can sound like this
+
+    ''
+    We have just created some files in the /opt/my_files folder.
+    How many .txt files are located in that folder ?
+    ''
+    To solve the task, the user should type a command like 
+    ls -l /opt/my_files | grep .txt , analyze the output
+    and then choose the correct option 
+    from the given options list
+
+
+    For that to happen , an action should be performed in the container before 
+    the user starts solving the task. That's why an 'interactive' task can have 
+    an optional command field, representing a specific command that is executed 
+    before the user starts the task.
+    For example, for the above task the command can be something like this
+
+
+    mkdir /opt/my_files && touch /opt/my_files/{fruits,cars,books}.txt file.py example.cpp
+
+
+    After the user completes the task, and additional 'clear_command' should be perfomed
+    in case that some files/directories should be removed etc. 
+
+    For example, for the above task the clear_command  can be something like this
+
+    rm -r /opt/my_files    
+    '''
+    description = models.TextField(max_length=(1<<10))
+    answer_choices = ArrayField(models.TextField(max_length=(1<<8)),null=True)
+    single_response = models.BooleanField(default=True)
+    correct_answers = ArrayField(models.IntegerField(null=True), null=True)
+    lab = models.ForeignKey(to=Lab,on_delete=models.CASCADE,null=True)
+    pre_task_command = models.TextField(max_length=(1<<10),blank=True)
+    post_task_command = models.TextField(max_length=(1<<10),blank=True)
+    indications = models.TextField(max_length=(1<<10),blank=True)
+
+    def __str__(self):
+        return "Choice Task for {}".format(self.lab if self.lab else "< no lab >");

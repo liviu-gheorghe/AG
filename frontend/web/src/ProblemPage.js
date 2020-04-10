@@ -4,9 +4,10 @@ import PageScroller from './components/PageScroller';
 import {Container,Row,Col,Button,Card,Badge,Tab,Nav} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import Header from './components/Header';
+import {ProblemSolutionCard} from './components/Cards';
 import ProblemEvaluationModal from './components/ProblemEvaluationModal';
 //import Page404 from './components/Page404';
-import {ProblemDetailsTable} from './ProblemSolutionPage';
+import {ProblemDetailsTable} from './components/ProblemDetailsTable';
 import './ProblemPage.css';
 //Ace editor imports
 import AceEditor from "react-ace";
@@ -18,11 +19,7 @@ import 'brace/ext/language_tools';
 import {capitalizeString} from './utils/core';
 
 
-function Sonnet(props) {
-    return <p>
-        {props.text}
-    </p>
-}
+
 
          
 class ProblemPage extends React.Component {
@@ -247,16 +244,11 @@ class ProblemPage extends React.Component {
         // fetch code snippents from the API
         this.fetchSnippets();
         //fetch current problem solutions from the API
-
-
-
         if (!this.props.cookies.get('auth_token')) {
             this.setState({
                 unauthorized: true,
             })
         }
-
-
         if (!this.state.unauthorized) {
             console.log("Fetching problem solutions");
             this.fetchProblemSolutions();
@@ -266,12 +258,12 @@ class ProblemPage extends React.Component {
         if (this.state.problem && !this.state.problem.detail)
             return (
                 <div style={{"position": "relative"}}>
-                    <Header bgVariant="dark" logged_user={this.props.cookies.get('username')} />
+                    <Header logged_user={this.props.cookies.get('username')} />
                     <Container>
                         <Row className="justify-content-center">
                             <Col xs={12} className="problem_statement_wrapper">
 
-                                <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                                <Tab.Container defaultActiveKey="first">
                                     <Row>
                                         <Col sm={12}>
                                             <Nav variant="pills" className="justify-content-center">
@@ -299,8 +291,18 @@ class ProblemPage extends React.Component {
                                                     <h2>Restrictii si precizari</h2>
                                                     <div>{this.state.problem.restrictions}</div>
                                                 </Tab.Pane>
-                                                <Tab.Pane eventKey="second">
-                                                    <Sonnet text={this.state.problem.explanations_and_indications}/>
+                                                <Tab.Pane eventKey="second" className="text-center">
+                                                    {
+                                                        this.state.problem.explanations_and_indications ? (
+                                                            <div>{this.state.problem.explanations_and_indications}</div>
+                                                        ):
+                                                        (
+                                                            <>
+                                                            <p>Nu exista explicatii/indicatii pentru aceasta problema</p>
+                                                            <img className="gif_placeholder" src={require(`./assets/img/gifs/nif00.gif`)} />
+                                                            </>
+                                                        )
+                                                    }
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="third">
                                                 <ProblemDetailsTable problem={this.state.problem}/>
@@ -383,47 +385,7 @@ class ProblemPage extends React.Component {
                                     this.state.problem_solutions.map(
                                         (solution,index) => {
                                             return (
-                                                <Col key={index} xs={12} md={6} lg={4} xl={4} className="my-4">
-                                                <Card
-                                                    bg={solution.score == "100" ? "success" : "danger"}
-                                                    style={
-                                                        {
-                                                            width: '18rem',
-                                                            color: '#fff',
-                                                            margin: 'auto',
-                                                        }
-                                                    }
-                                                    onClick = {() => {
-                                                        window.location.href = `/solutii_probleme/${solution.id}`
-                                                    }}
-                                                >
-                                                    <Card.Header>Solutia #{solution.id}</Card.Header>
-                                                    <Card.Body className="text-center">
-                                                        <div>
-                                                            <p>
-                                                                Tip : {solution.source_type}
-                                                            </p>
-                                                            <p>
-                                                                Punctaj : {solution.score} puncte
-                                                            </p>
-                                                            <p>
-                                                                Incarcat :<br/>
-                                                                {
-                                                                    solution.is_recent ? (
-                                                                        "Acum " + solution.is_recent_date_posted
-                                                                    ) : (
-                                                                                `${solution.date_posted} ${solution.time_posted}`
-                                                                    )
-                                                                }
-                                                            </p>                      
-                                                            <FontAwesome
-                                                                name={solution.score == "100" ? "check":"times"}
-                                                                className="card_icon">
-                                                            </FontAwesome>
-                                                        </div>
-                                                    </Card.Body>
-                                                </Card>
-                                                </Col>
+                                                < ProblemSolutionCard key={index} solution={solution}/>
                                             );
                                         }
                                     )

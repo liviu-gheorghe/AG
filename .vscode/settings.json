@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "backend/virtualenv/bin/python"
+    "python.pythonPath": "backend/virtualenv/bin/python",
+    "git.ignoreLimitWarning": true
 }

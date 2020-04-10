@@ -33,7 +33,7 @@ class Header extends React.Component {
             className="navbar"
             variant="dark"
             bg = {
-                this.props.bgVariant ? this.props.bgVariant : "dark"
+                this.props.bgVariant ? this.props.bgVariant : "success"
             } 
             expand="lg">
                 <Navbar.Brand href="/">AlgoGeek</Navbar.Brand>

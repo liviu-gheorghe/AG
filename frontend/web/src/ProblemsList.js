@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './components/Header';
 import PageScroller from './components/PageScroller';
 import { withCookies } from 'react-cookie';
+import {ProblemCard} from './components/Cards';
 import 
     {
     Container,
@@ -25,21 +26,6 @@ import FontAwesome from 'react-fontawesome';
 import './Main.css';
 import './ProblemsList.css';
 
-// eslint-disable-next-line
-class ProblemCard extends React.Component {
-    render () {
-        return (
-            <div 
-            style={
-                {
-
-                }
-            }>
-
-            </div>
-        );
-    }
-}
 
 
 class ProblemsList extends React.Component {
@@ -185,12 +171,6 @@ end=${end_index}
 
 
     }
-    DIFFICULTY_COLOR = {
-        'elementar': '#007bff',
-        'usor': '#28a745',
-        'intermediar': '#6f42c1',
-        'dificil': '#dc3545',
-    }
 
    render () {
        console.log(this.state.problems_list);
@@ -203,100 +183,41 @@ end=${end_index}
                 </Col>
                 <Col xs={12} xl={8}>
                 <Row className="align-items-center">
-                       <Col xs={12} className="filter_section my-2">
-                           <InputGroup className="mb-3">
-                               <FormControl
-                                   placeholder="Cauta problema(id,nume)"
-                                   aria-label="Cautare problema"
-                                   aria-describedby=""
-                                   onChange = { this.updateSearchQuery }
-                               />
-                               <InputGroup.Append>
-                                           <Button variant="outline-secondary" onClick={ this.searchByQueryParams }>Cautare</Button>
-                               </InputGroup.Append>
-                           </InputGroup>
-                            <div
+                    <Col xs={12} className="filter_section my-2">
+                        <InputGroup className="mb-3">
+                            <FormControl
+                                placeholder="Cauta problema(id,nume)"
+                                aria-label="Cautare problema"
+                                aria-describedby=""
+                                onChange = { this.updateSearchQuery }
+                                />
+                            <InputGroup.Append>
+                                <Button variant="outline-secondary" onClick={ this.searchByQueryParams }>Cautare</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                        <div
                             style={{
                                 display:'flex',
                                 alignItems:'center',
                                 cursor:'pointer'
 
                             }}
-                                onClick = {
-                                    () => {
-                                        window.location.href = "/probleme/categorii/";
-                                    }
+                            onClick = {
+                                () => {
+                                    window.location.href = "/probleme/categorii/";
                                 }
+                            }
                             >
-                                <span>Categorii</span>
-                                    <FontAwesome name="list-alt" style={{ fontSize: '35px', margin: '0px 5px' }} />
-                            </div>
-                       </Col>
+                            <span>Categorii</span>
+                            <FontAwesome name="list-alt" style={{ fontSize: '35px', margin: '0px 5px' }} />
+                        </div>
+                    </Col>
                     {
                         this.state.problems_list.map(
                             (problem,index) => {
                                 var img_src = (index%3) ? "asset003.jpg" : "graph.png";
                                 return (
-                                    <Col key={index}
-                                    xs={12}
-                                    sm={6}
-                                    md={6}
-                                    lg={4}
-                                    className="my-4"
-                                    onClick = {
-                                        () => {
-                                            window.location.href = `/probleme/${problem.id}`
-                                        }
-                                    }
-                                    >
-                                    <Card>
-                                        <Card.Img className="problem_image" variant="top" src={
-                                            require(`./assets/img/${img_src}`)
-                                            } />
-                                        <Card.Body>
-                                                <Card.Title>
-                                                    {problem.name}
-                                                    <Badge key={index} 
-                                                    className="p-2 m-2" 
-                                                    style = {{
-                                                        backgroundColor: this.DIFFICULTY_COLOR[problem.difficulty],
-                                                        color : '#fff',
-                                                        fontSize : '14px'
-                                                    }}
-                                                    >
-                                                        {problem.difficulty}
-                                                    </Badge>     
-                                                </Card.Title>
-                                            <Card.Text>
-                                                {problem.description.slice(0, 100).split(" ").slice(0,-1).join(' ')} <a href={`/probleme/${problem.id}`}>Mai mult</a>
-                                            </Card.Text>
-                                                <Card.Text>
-                                                    Taguri
-                                                    {
-                                                        problem.tags.split(',').map(
-                                                            (tag,index) => 
-                                                            {
-                                                                return (
-                                                                        <Badge key={index} className="px-2 py-1 m-2" variant="primary">{tag}</Badge>                                                                );
-                                                            }
-                                                        )
-                                                    }
-                                                </Card.Text>                                            
-                                        </Card.Body>
-                                        <Card.Footer>
-                                        <small>
-                                                <FontAwesome name="calendar"></FontAwesome>
-                                                {
-                                                    problem.is_recent ? (<span className="mx-2">Acum {problem.is_recent_date_posted}</span>) : (
-                                                    <span className = "mx-2">
-                                                        {problem.date_posted} {problem.time_posted}
-                                                    </span>
-                                                    )
-                                                }
-                                        </small>
-                                        </Card.Footer>
-                                    </Card>
-                                    </Col>
+                                    <ProblemCard key={index} problem={problem} img_src={img_src}/>
                                 );
                             }
                         )
