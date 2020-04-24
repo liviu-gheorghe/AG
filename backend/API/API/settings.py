@@ -119,11 +119,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'secret_password',
-        'HOST': '127.0.0.1',
+        'PASSWORD': os.getenv("DATABASE_PASSWORD") or 'secret_password',
+        'HOST': os.getenv("DATABASE_HOST") or '127.0.0.1',
         'PORT': '5432',
     }
 }
+
 '''
 EMAIL_HOST = {
     'default' : 'smtp.gmail.com',

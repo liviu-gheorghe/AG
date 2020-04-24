@@ -174,15 +174,32 @@ class ProblemSolutionDetailSerializer(serializers.ModelSerializer):
         ]
 
 
+class LabTaskChoicesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabTaskChoices
+        fields = '__all__'
 
 
 class LabSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lab
+        fields = [
+            'id',
+            'name',
+            'short_description',
+            'description',
+            'category',
+            'labtaskchoices_set',
+        ]
+
+
+class TutorialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tutorial
         fields = '__all__'
 
 
-class LabTaskChoicesSerializer(serializers.ModelSerializer):
+class TutorialArticleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LabTaskChoices
+        model = TutorialArticle
         fields = '__all__'

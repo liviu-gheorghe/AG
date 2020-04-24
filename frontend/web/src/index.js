@@ -12,37 +12,53 @@ import UserPage from './UserPage';
 import ProblemSolutionPage from './ProblemSolutionPage';
 import ProblemCategories from './ProblemsCategories';
 import TutorialsList from './presentational_components/tutorials/TutorialsList';
-import LabsListContainer from './container_components/LabsListContainer';
+import TutorialPage from "./presentational_components/tutorials/TutorialPage";
+import LabList from "./presentational_components/labs/LabsList";
 import LabPage from './presentational_components/labs/LabPage';
+import WebPlayground from "./presentational_components/labs/WebPlayground";
+import TerminalPlayground from './components/TerminalPlayground';
 import {store} from './redux/store';
 
 
-export const StoreContext = React.createContext(store);
+//export const StoreContext = React.createContext(store);
+
+export const LanguageContext = React.createContext('ro');
 
 const Page_404 = () => {
     return <h1>Error 404 Page Not Found</h1>
 }
 
 const router = (
-    <StoreContext.Provider value={store}>
+<LanguageContext.Provider value="ro">
     <BrowserRouter forceRefresh={true}>
-        <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/logare" component={Login} />
-            <Route exact path="/inregistrare" component={Signup} />
-            <Route exact path="/probleme/" component={ProblemsList} />
-            <Route exact path="/tutoriale/" component={TutorialsList} />
-            <Route exact path="/laboratoare" component={LabsListContainer} />
-            <Route exact path="/laboratoare/:lab_name" component={LabPage} />
-            <Route exact path="/probleme/categorii" component={ProblemCategories} />
-            <Route exact path="/probleme/categorii/:topic_name" component={ProblemsList} />
-            <Route exact path="/probleme/:problem_id" component={ProblemPage} />
-            <Route exact path="/utilizatori/:username" component={UserPage} />
-            <Route exact path="/solutii_probleme/:solution_id" component={ProblemSolutionPage} />
-        </Switch>
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/logare" component={Login} />
+        <Route exact path="/inregistrare" component={Signup} />
+        <Route exact path="/probleme/" component={ProblemsList} />
+        <Route exact path="/tutoriale/" component={TutorialsList} />
+        <Route exact path="/antrenament/consola_web" component={WebPlayground} />
+        <Route exact path="/antrenament/linux" component={TerminalPlayground} />
+        <Route exact path="/tutoriale/:tutorial_id/:tutorial_name" component={TutorialPage} />
+        <Route exact path="/laboratoare" component={LabList} />
+        <Route exact path="/laboratoare/:lab_id/:lab_name" component={LabPage} />
+        <Route exact path="/probleme/categorii" component={ProblemCategories} />
+        <Route
+          exact
+          path="/probleme/categorii/:topic_name"
+          component={ProblemsList}
+        />
+        <Route exact path="/probleme/:problem_id" component={ProblemPage} />
+        <Route exact path="/utilizatori/:username" component={UserPage} />
+        <Route
+          exact
+          path="/solutii_probleme/:solution_id"
+          component={ProblemSolutionPage}
+        />
+      </Switch>
     </BrowserRouter>
-    </StoreContext.Provider>
-)
+  </LanguageContext.Provider>
+);
 
 ReactDOM.render(router, document.getElementById('root'));
 // If you want your app to work offline and load faster, you can change

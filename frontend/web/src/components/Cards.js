@@ -166,7 +166,7 @@ export function LabCard(props) {
             className="my-4"
             onClick={
                 () => {
-                    window.location.href = `/laboratoare/${props.lab.name}`
+                    window.location.href = `/laboratoare/${props.lab.id}/${props.lab.name}`;
                 }
             }
         >
@@ -188,4 +188,31 @@ export function LabCard(props) {
             </Card>
         </Col>
     );
+}
+
+export function TutorialCard(props) {
+  return (
+    <Col
+      xs={12}
+      sm={12}
+      md={6}
+      lg={6}
+      className="my-4"
+      onClick={
+            () => {
+                window.location.href = `/tutoriale/${props.tutorial.id}/${props.tutorial.name}`;
+            }
+        }
+    >
+      <Card className="tutorial_card">
+        <Card.Body>
+        <Card.Title>{props.tutorial.name}</Card.Title>
+        <Card.Text>{props.tutorial.short_description}</Card.Text>
+        </Card.Body>
+        <Card.Footer>
+        <small>{props.tutorial.category}</small>
+        </Card.Footer>
+      </Card>
+    </Col>
+  );
 }

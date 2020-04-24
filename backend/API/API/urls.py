@@ -27,7 +27,6 @@ urlpatterns = [
     path('siteverify',verifyCaptchaView),
     path('add_user',addUser),
     path('execute_sql',execute_sql),
-    path('api/', include('ag_api.urls')),
-    path('labs/',include('proxy.urls'))
+    path('api/', include('ag_api.urls'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

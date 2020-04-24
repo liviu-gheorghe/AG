@@ -1,23 +1,33 @@
 import React,{useState,useEffect} from 'react';
-import {Container,Row,Col,Button,Tab,Nav,Tabs} from 'react-bootstrap';
+import {Container,Row,Col,Button,Tab,Table,Tabs,Badge} from 'react-bootstrap';
 import Header from '../../components/Header';
 import '../../Main.css';
 import FontAwesome from 'react-fontawesome';
 import XTerminal from "../../components/XTerminal";
 import { withCookies } from 'react-cookie';
-import {Queue} from '../../utils/core';
+import {Queue,areArraysEqual} from '../../utils/core';
 
 class LabPage extends React.Component {
 
   constructor(props) {
+    /** 
+    window.onbeforeunload = function () {
+      return "Reincarcarea paginii va provoca pierderea progresului";
+    }
+    **/
     super(props);
     this.handleSocketOpen = this.handlePtySocketOpen.bind(this);
     this.handleSocketClose = this.handlePtySocketClose.bind(this);
+    this.handleTaskManagementWebSocketOpen = this.handleTaskManagementWebSocketOpen.bind(this);
+    this.handleTaskManagementWebSocketClose = this.handleTaskManagementWebSocketClose.bind(this);
+    this.handleTaskManagementWebSocketError = this.handleTaskManagementWebSocketError.bind(this);
     this.state = {
       tasks: [],
       activity_status : 0,
       active_task: null,
-      answers_list : []
+      answers_list : [],
+      obtained_score : 0,
+      websocket_connection_error:null,
     }
   }
 
@@ -31,7 +41,7 @@ class LabPage extends React.Component {
 
   fetchTasks = () => {
     fetch(
-      `${process.env.REACT_APP_API_URL}/api/lab_tasks_choices/`
+      `${process.env.REACT_APP_API_URL}/api/lab_tasks_choices/?lab=${this.props.match.params.lab_id}`
     )
     .then(resp=>resp.json())
     .then(
@@ -50,6 +60,8 @@ class LabPage extends React.Component {
 
   // send task management data through the websocket
   sendTaskManagementData(data) {
+    //console.log(this);
+    //console.log(this.websocket);
     this.websocket.send(data);
   }
 
@@ -59,16 +71,18 @@ class LabPage extends React.Component {
 
   handleTaskManagementWebSocketClose() {
     console.log("Task Management WebSocket connection closed")
+     console.log(this);
   }
 
   handleTaskManagementWebSocketError() {
-    console.log("Task Management WebSocket connection failed")
+    //this.setState({websocket_connection_error:true});
+   
   }
 
   handlePtySocketOpen() {
     this.setState({connection_alive:true});
   }
-  handlePtySocketClose(){
+  handlePtySocketClose() {
     //alert("O eroare neasteptata a aparut si conexiunea s-a inchis")
     this.setState({connection_alive:false});
   }
@@ -78,35 +92,26 @@ class LabPage extends React.Component {
     // Avoid mutating the state by concatenating the current task answers list with 
     // an empty array 
     var current_task_answers_list = this.state.answers_list[this.state.active_task].concat([]);
-    //console.log("Active task is ", this.state.active_task);
-    //console.log("So, the full state is \n",this.state.answers_list);
 
     // If the task has only one correct response then just replace the existing response(if any)
     // with the new response
     if(this.state.tasks[this.state.active_task].single_response == true)
     {
-      //console.log("This is a single response task")
-      //console.log(`User selected answer ${answer}`)
       // if the answer already exists and it is equal to the current answer 
       // it means that the users wants to toggle the response --> delete 
       // the response
       if (current_task_answers_list[0] == answer)
       {
-        //console.log("The answer is the same , toggling")
         current_task_answers_list.pop();
       }
       // otherwise change the response with the new response
       else
       {
-        //console.log(`The answer ${answer} is not the same as ${current_task_answers_list[0]}, adding `);
-        //console.log(current_task_answers_list[0])
-        //console.log(answer);
         current_task_answers_list[0]=answer;
       }
     }
     else
     {
-      //console.log("THIS MESSAGE SHOULD NOT BE DISPLAYED");
       // If the task has multiple choices, then add the answer to the current answers list 
       // if the answer is not already in the list
       // If the answer is already in the list it means that the user wants to toogle 
@@ -118,18 +123,69 @@ class LabPage extends React.Component {
       else
       {
         current_task_answers_list.push(answer);
+        // Sort the list such that the answers 
+        // are ordered and is easy to compare 
+        // it with the correct response
+        current_task_answers_list.sort();
       }
     }
     // update the state
     let answers_list = this.state.answers_list;
-    //console.log("Current full state\n", this.state.answers_list)
     answers_list[this.state.active_task] = current_task_answers_list;
-    //console.log(` Selected answers for task ${this.state.active_task}`)
-    //console.log(current_task_answers_list);
     
     this.setState({
       answers_list : answers_list
     })
+  }
+
+  handleCurrentTaskModification(next) {
+    console.log("Handling nodification");
+
+    // if the users selects the same task again don't do anything 
+    if(this.state.active_task == next) {console.log("Selected same task");return;}
+
+
+    // if this is not the first selected task(the activity started earlier and this
+    // is not the first task selected by the user), then run the post_task_command in the 
+    // container for the previous task(if any)
+    if(this.state.active_task != null) {
+      var post_task_command = this.state.tasks[this.state.active_task].post_task_command;
+      //console.log(`post task for ${this.state.active_task} is --> ${post_task_command} `)
+      if (post_task_command) //this.sendTaskManagementData(pre_task_command);
+      {
+        console.log(`Sending post task for ${next} --> ${post_task_command} `)
+        this.websocket.send(post_task_command);
+      }
+    }
+    this.setState({active_task:next})
+    // After moving to the new task , run the pre_task_command in the container 
+    // for the task(if any)
+    var pre_task_command = this.state.tasks[next].pre_task_command;
+    //console.log(`pre task for ${next} is --> ${pre_task_command} `)
+    if (pre_task_command)
+    { //this.sendTaskManagementData(post_task_command);
+      console.log(`Sending pre task for ${next} --> ${pre_task_command} `)
+      this.websocket.send(pre_task_command);
+    }
+  }
+
+
+  computeObtainedScore () {
+    // first,modify the activity status from ongoing to finished
+    this.setState({activity_status:2})
+    // close the socket connection 
+    this.websocket.close();
+
+
+    var obtained_score = 0;
+    // for every task in the list check if the 
+    // given response list is the same as the correct 
+    // response list
+    for (var i = 0;i<this.state.tasks.length;i++)
+    {
+      obtained_score += areArraysEqual(this.state.answers_list[i], this.state.tasks[i].correct_answers)
+    }
+    this.setState({obtained_score:obtained_score});
   }
 
 
@@ -144,13 +200,15 @@ class LabPage extends React.Component {
   }
 
   startActivity() {
-    this.setState({ activity_status: 1, active_task: 0 })
+    this.setState({ activity_status: 1})
+    this.handleCurrentTaskModification(0);
     console.log("Creating task management websocket");
-    this.websocket = this.createTaskManagementWebSocket(`${process.env.REACT_APP_WEBSOCKET_URL}`,"443");
   }
 
+
   componentDidMount() {
-    console.log(this.props.match)
+    // Create the websocket
+    this.websocket = this.createTaskManagementWebSocket(`${process.env.REACT_APP_WEBSOCKET_URL}`, "443");
     this.fetchTasks();
   }
     render () {
@@ -176,7 +234,7 @@ class LabPage extends React.Component {
                     }}
                     className="align-items-center justify-content-center my-4"
                     activeKey={this.state.active_task}
-                    onSelect={key => this.setState({ active_task: parseInt(key) }) }
+                        onSelect={key => this.handleCurrentTaskModification(parseInt(key)) }
                     >
                       {
                         this.state.tasks.map((task,index) => {
@@ -229,7 +287,7 @@ class LabPage extends React.Component {
                           onClick={
                             () => {
                               console.log("MODIFYING CURRENT ACTIVE TASK TO ", this.state.active_task - 1)
-                              this.setState({ active_task: this.state.active_task - 1 })
+                              this.handleCurrentTaskModification(this.state.active_task - 1)
                             }
                           }              
                         >
@@ -250,7 +308,7 @@ class LabPage extends React.Component {
                             () => 
                             {
                               console.log("MODIFYING CURRENT ACTIVE TASK TO ", this.state.active_task + 1 )
-                              this.setState({active_task:this.state.active_task+1})
+                              this.handleCurrentTaskModification(this.state.active_task + 1)
                             }
                           }
                           >
@@ -264,15 +322,12 @@ class LabPage extends React.Component {
                                 float: 'right'
                               }}
                               onClick={
-                                () => {}
+                                () => {
+                                  this.computeObtainedScore()
+                                }
                               }
                             >
                               <span
-                              onClick = {
-                                () => {
-                                  this.sendTaskManagementData("mkdir /opt/paula")
-                                }
-                              }
                               >Finalizare</span>
                               <FontAwesome name="check" className="mx-2" />
                             </Button>                      
@@ -286,24 +341,92 @@ class LabPage extends React.Component {
                     xs={12} 
                     style={{ height: '80vh', display: 'flex',flexWrap:'wrap' }} 
                     className="align-items-center justify-content-center">
-                      <h3 className="mx-4">{ this.props.match.params.lab_name }</h3>
-                      <Button 
-                      style = {{
-                        fontSize:'20px',
-                        height:'60px',
-                        width:'200px'
-                      }}
-                      onClick = {
-                        () => {
-                          this.startActivity();
-                        }
-                      }>
-                        <span>Start</span>
-                      </Button>
-                      <div style={{ flexBasis: '100%', height: '0px' }}></div>
-                    <h2><code>{"<code> </code>"}</code></h2>
-                      <div style={{flexBasis:'100%',height:'0px'}}></div>
-                    <small>Numarul de task-uri : {this.state.tasks.length}</small>
+                      {
+                        this.state.activity_status ==0 ? (
+                          <>
+                            <h3 className="mx-4">{this.props.match.params.lab_name}</h3>
+                            <Button
+                              style={{
+                                fontSize: '20px',
+                                height: '60px',
+                                width: '200px'
+                              }}
+                              onClick={
+                                () => {
+                                  this.startActivity();
+                                }
+                              }>
+                              <span>Start</span>
+                            </Button>
+                            <div style={{ flexBasis: '100%', height: '0px' }}></div>
+                            <h2><code>{"<code> </code>"}</code></h2>
+                            <div style={{ flexBasis: '100%', height: '0px' }}></div>
+                            <small>Numarul de task-uri : {this.state.tasks.length}</small>
+                          </>
+                        ): (
+                          <>
+                            <h3>Laborator finalizat</h3>
+                            <div style={{ flexBasis: '100%', height: '0px' }}></div>
+                            <Table className="text-center lab_score_table" bordered>
+                              <thead>
+                                <tr>
+                                <td>Task</td>
+                                <td>Raspunsul tau</td>
+                                <td>Raspunsul corect</td>
+                                <td>Ai raspuns corect</td>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {
+                                  this.state.tasks.map((task, index) => {
+                                    return (
+                                      <tr key={index}>
+                                        <td>{task.description}</td>
+                                        <td>
+                                          {this.state.answers_list[index].map(
+                                            (ans, index) => (
+                                              <Badge
+                                                key={index}
+                                                className="m-2 p-2"
+                                                variant="danger"
+                                              >
+                                                {task.answer_choices[ans]}
+                                              </Badge>
+                                            )
+                                          )}
+                                        </td>
+                                        <td>
+                                          {task.correct_answers.map(
+                                            (ans, index) => (
+                                              <Badge
+                                                key={index}
+                                                className="m-2 p-2"
+                                                variant="danger"
+                                              >
+                                                {task.answer_choices[ans]}
+                                              </Badge>
+                                            )
+                                          )}
+                                        </td>
+                                        <td>
+                                          {areArraysEqual(
+                                            this.state.answers_list[index],
+                                            task.correct_answers
+                                          )
+                                            ? "DA"
+                                            : "NU"}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })
+                                }
+                              </tbody>
+                            </Table>
+                            <div style={{ flexBasis: '100%', height: '0px' }}></div>
+                              <p>Ai raspuns corect la {this.state.obtained_score} intrebari</p>
+                          </>
+                        )
+                      }
                   </Col>
                 )
               }

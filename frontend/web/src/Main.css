@@ -19,3 +19,35 @@
 {
 background-color: #0069d9 !important;    
 }
+
+.lab_score_table td
+{
+    vertical-align:middle;
+}
+
+.tutorial_card
+{
+    cursor: pointer;
+    transition: all .2s ease-in;
+}
+.tutorial_card:hover
+{
+    transform: scale(1.025);
+}
+
+.tutorial_page_wrapper .nav-link
+{
+
+}
+.tutorial_page_wrapper .nav-link.active
+{
+    background-color: #28a745 !important;
+}
+@media only screen and (max-width:991px) {
+    .sidebar
+    {
+        position: relative !important;
+        height: auto !important;
+    }
+    
+}

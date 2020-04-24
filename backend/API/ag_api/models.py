@@ -517,6 +517,7 @@ class Lab(models.Model):
     short_description = models.TextField(max_length=FIELD_MAX_LEN['short_description'])
     description = models.TextField(max_length=FIELD_MAX_LEN['description'])
     category = models.TextField(max_length=FIELD_MAX_LEN['category'])
+    author = models.ForeignKey(to=User,on_delete=models.SET_NULL,null=True)
 
     def __str__(self):
         return self.name
@@ -550,7 +551,7 @@ class LabTaskChoices(models.Model):
 
     For that to happen , an action should be performed in the container before 
     the user starts solving the task. That's why an 'interactive' task can have 
-    an optional command field, representing a specific command that is executed 
+    an optional pre_task_command field, representing a specific command that is executed 
     before the user starts the task.
     For example, for the above task the command can be something like this
 
@@ -575,4 +576,57 @@ class LabTaskChoices(models.Model):
     indications = models.TextField(max_length=(1<<10),blank=True)
 
     def __str__(self):
-        return "Choice Task for {}".format(self.lab if self.lab else "< no lab >");
+        return "Choice Task {} for {}".format(self.id,self.lab if self.lab else "< no lab >");
+
+
+
+
+
+
+class Tutorial(models.Model):
+    '''
+    Model used for representing tutorials.
+    A tutorial consists of a name, a description 
+    and other optional fields like a list of 
+    covered informations, the related topic etc
+
+    Every tutorial has multiple associated articles 
+    '''
+
+    FIELD_MAX_LEN = {
+        'name': (1 << 6),
+        'short_description': (1 << 7),
+        'description': (1 << 16),
+        'category': (1 << 5),
+    }
+
+    name = models.TextField(max_length=FIELD_MAX_LEN['name'])
+    short_description = models.TextField(max_length=FIELD_MAX_LEN['short_description'])
+    description = models.TextField(max_length=FIELD_MAX_LEN['description'])
+    category = models.TextField(max_length=FIELD_MAX_LEN['category'])
+    author = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+
+
+    def __str__(self):
+        return self.name
+
+
+
+class TutorialArticle(models.Model):
+    '''
+    Model used for representing tutorial articles.
+    A tutorial article consists of a title(name)
+    multiple content fields, code snippets, examples etc.
+    Every tutorial article is related to a specific tutorial
+    '''
+    FIELD_MAX_LEN = {
+        'title':(1<<6),
+        'content':(1<<16)
+    }
+    title = models.TextField(max_length=FIELD_MAX_LEN['title'])
+    content = models.TextField(max_length=FIELD_MAX_LEN['content'])
+    tutorial = models.ForeignKey(to=Tutorial,on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return "Articol {} --> {}".format(self.tutorial,self.title)

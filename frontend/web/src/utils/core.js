@@ -10,6 +10,17 @@ export function capitalizeString(str)
     return str[0].toUpperCase() + str.slice(1);
 }
 
+export function areArraysEqual(arr1,arr2) {
+    if(!arr1 || !arr2) return false;
+    if(arr1.length != arr2.length) return false;
+    if(arr1.length == 0) return true;
+    for(var i=0;i<arr1.length;i++)
+        if(arr1[i] != arr2[i])
+            return false;
+    
+    return true; 
+}
+
 
 export class Queue
 {

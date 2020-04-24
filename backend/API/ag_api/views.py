@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 import requests,json,subprocess,os,requests
 
 
+
 #Viewset used for user
 class UserViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
@@ -182,9 +183,37 @@ class LabViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LabTaskChoicesViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = LabTaskChoices.objects.all()
+    queryset = LabTaskChoices.objects.order_by('id').all()
     serializer_class = LabTaskChoicesSerializer
     permission_classes = (AllowAny,)
+    def get_queryset(self, **kwargs):
+        urlparams = self.request.GET
+        if urlparams:
+            if urlparams.get('lab'):
+                kwargs['lab__id'] = urlparams['lab']
+
+        return LabTaskChoices.objects.filter(**kwargs)
+
+
+class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tutorial.objects.order_by('category').all()
+    serializer_class = TutorialSerializer
+    permission_classes = (AllowAny,)
+
+
+class TutorialArticleViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = TutorialArticle.objects.all()
+    serializer_class = TutorialArticleSerializer
+    permission_classes = (AllowAny,)
+
+    def get_queryset(self,**kwargs):
+        urlparams = self.request.GET
+        if urlparams:
+            if urlparams.get('tutorial'):
+                kwargs['tutorial__id']=urlparams['tutorial']
+        
+
+        return TutorialArticle.objects.filter(**kwargs)
 
 
 @api_view(['POST',])
@@ -213,10 +242,13 @@ def evaluate(request):
     type_of_source = payload['type_of_source']
     #Convert the payload to json string and provide it to the POST 
     # request for the evaluation server
+ 
+    EVALUATION_CONTAINER_HOST = os.getenv('EVALUATION_CONTAINER_HOST') or 'http://127.0.0.1:7000'
+
 
     json_payload = json.dumps(payload)
     evaluation_response = requests.post(
-        'http://127.0.0.1:7000',
+        EVALUATION_CONTAINER_HOST,
         data=json_payload
     ).json()
 
