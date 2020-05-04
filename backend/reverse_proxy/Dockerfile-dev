@@ -1,0 +1,2 @@
+FROM ag_reverse_proxy
+CMD node /opt/fake_proxy.js

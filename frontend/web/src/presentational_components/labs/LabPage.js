@@ -5,16 +5,16 @@ import '../../Main.css';
 import FontAwesome from 'react-fontawesome';
 import XTerminal from "../../components/XTerminal";
 import { withCookies } from 'react-cookie';
-import {Queue,areArraysEqual} from '../../utils/core';
-
+import {areArraysEqual} from '../../utils/core';
+import TasksPane from './TasksPane';
 class LabPage extends React.Component {
 
   constructor(props) {
-    /** 
+  
     window.onbeforeunload = function () {
       return "Reincarcarea paginii va provoca pierderea progresului";
     }
-    **/
+    
     super(props);
     this.handleSocketOpen = this.handlePtySocketOpen.bind(this);
     this.handleSocketClose = this.handlePtySocketClose.bind(this);
@@ -28,6 +28,7 @@ class LabPage extends React.Component {
       answers_list : [],
       obtained_score : 0,
       websocket_connection_error:null,
+      task_management_websocket_created:false,
     }
   }
 
@@ -76,14 +77,13 @@ class LabPage extends React.Component {
 
   handleTaskManagementWebSocketError() {
     //this.setState({websocket_connection_error:true});
-   
   }
 
   handlePtySocketOpen() {
     this.setState({connection_alive:true});
   }
   handlePtySocketClose() {
-    //alert("O eroare neasteptata a aparut si conexiunea s-a inchis")
+    console.log("O eroare neasteptata a aparut si conexiunea s-a inchis")
     this.setState({connection_alive:false});
   }
 
@@ -138,20 +138,18 @@ class LabPage extends React.Component {
     })
   }
 
-  handleCurrentTaskModification(next) {
+  handleCurrentTaskModification(next,no_management) {
     console.log("Handling nodification");
 
-    // if the users selects the same task again don't do anything 
+    // if the user selects the same task again, do nothing 
     if(this.state.active_task == next) {console.log("Selected same task");return;}
-
-
     // if this is not the first selected task(the activity started earlier and this
     // is not the first task selected by the user), then run the post_task_command in the 
     // container for the previous task(if any)
     if(this.state.active_task != null) {
       var post_task_command = this.state.tasks[this.state.active_task].post_task_command;
       //console.log(`post task for ${this.state.active_task} is --> ${post_task_command} `)
-      if (post_task_command) //this.sendTaskManagementData(pre_task_command);
+      if (post_task_command && no_management==undefined) //this.sendTaskManagementData(pre_task_command);
       {
         console.log(`Sending post task for ${next} --> ${post_task_command} `)
         this.websocket.send(post_task_command);
@@ -162,19 +160,18 @@ class LabPage extends React.Component {
     // for the task(if any)
     var pre_task_command = this.state.tasks[next].pre_task_command;
     //console.log(`pre task for ${next} is --> ${pre_task_command} `)
-    if (pre_task_command)
+    if (pre_task_command && no_management == undefined)
     { //this.sendTaskManagementData(post_task_command);
       console.log(`Sending pre task for ${next} --> ${pre_task_command} `)
       this.websocket.send(pre_task_command);
     }
   }
 
-
-  computeObtainedScore () {
+  computeObtainedScore (answers_list) {
     // first,modify the activity status from ongoing to finished
     this.setState({activity_status:2})
     // close the socket connection 
-    this.websocket.close();
+    //this.websocket.close();
 
 
     var obtained_score = 0;
@@ -183,7 +180,7 @@ class LabPage extends React.Component {
     // response list
     for (var i = 0;i<this.state.tasks.length;i++)
     {
-      obtained_score += areArraysEqual(this.state.answers_list[i], this.state.tasks[i].correct_answers)
+      obtained_score += areArraysEqual(answers_list[i], this.state.tasks[i].correct_answers)
     }
     this.setState({obtained_score:obtained_score});
   }
@@ -201,14 +198,14 @@ class LabPage extends React.Component {
 
   startActivity() {
     this.setState({ activity_status: 1})
-    this.handleCurrentTaskModification(0);
+    this.handleCurrentTaskModification(0,true);
     console.log("Creating task management websocket");
   }
 
 
   componentDidMount() {
     // Create the websocket
-    this.websocket = this.createTaskManagementWebSocket(`${process.env.REACT_APP_WEBSOCKET_URL}`, "443");
+    //this.websocket = this.createTaskManagementWebSocket(`${process.env.REACT_APP_WEBSOCKET_URL}`, "443");
     this.fetchTasks();
   }
     render () {
@@ -227,14 +224,14 @@ class LabPage extends React.Component {
                     handleSocketClose = {this.handleSocketClose}
                     />
                   </Col>
-                  <Col xs={12} className="lab_statment">
+                  <Col xs={12} className="lab_statement">
                     <Tabs
                     style={{
                       flexWrap:'wrap',
                     }}
                     className="align-items-center justify-content-center my-4"
                     activeKey={this.state.active_task}
-                        onSelect={key => this.handleCurrentTaskModification(parseInt(key)) }
+                        onSelect={key => this.handleCurrentTaskModification(parseInt(key),true) }
                     >
                       {
                         this.state.tasks.map((task,index) => {
@@ -287,7 +284,7 @@ class LabPage extends React.Component {
                           onClick={
                             () => {
                               console.log("MODIFYING CURRENT ACTIVE TASK TO ", this.state.active_task - 1)
-                              this.handleCurrentTaskModification(this.state.active_task - 1)
+                              this.handleCurrentTaskModification(this.state.active_task - 1,true)
                             }
                           }              
                         >
@@ -308,7 +305,7 @@ class LabPage extends React.Component {
                             () => 
                             {
                               console.log("MODIFYING CURRENT ACTIVE TASK TO ", this.state.active_task + 1 )
-                              this.handleCurrentTaskModification(this.state.active_task + 1)
+                              this.handleCurrentTaskModification(this.state.active_task + 1,true)
                             }
                           }
                           >
@@ -323,7 +320,7 @@ class LabPage extends React.Component {
                               }}
                               onClick={
                                 () => {
-                                  this.computeObtainedScore()
+                                  this.computeObtainedScore(this.state.answers_list);
                                 }
                               }
                             >
@@ -342,7 +339,7 @@ class LabPage extends React.Component {
                     style={{ height: '80vh', display: 'flex',flexWrap:'wrap' }} 
                     className="align-items-center justify-content-center">
                       {
-                        this.state.activity_status ==0 ? (
+                        this.state.activity_status == 0 ? (
                           <>
                             <h3 className="mx-4">{this.props.match.params.lab_name}</h3>
                             <Button

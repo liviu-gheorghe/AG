@@ -45,8 +45,7 @@ ENV PRODUCTION false
 ENV EVALUATION_CONTAINER_HOST http://evaluator:8080
 ENV DATABASE_HOST database
 ENV DATABASE_PASSWORD secret_password
-#Advanced Romanian Engineering technique
-RUN sleep 10
+
 
 #CMD python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000
 CMD service nginx start && uwsgi --socket :8001 --wsgi-file API/wsgi.py

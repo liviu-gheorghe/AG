@@ -1,0 +1,4 @@
+FROM node:lts-alpine
+WORKDIR /opt
+CMD npm start
+EXPOSE 3000

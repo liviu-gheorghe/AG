@@ -1,0 +1,46 @@
+version: "2"
+services:
+    frontend_dev:
+        build:
+            context: ./frontend/web
+            dockerfile: Dockerfile-dev
+        container_name: frontend-dev
+        ports: 
+            - "4000:3000"
+        networks:
+            - frontend
+        volumes: 
+            - ./frontend/web:/opt
+    api_dev:
+        build:
+            context: ./backend/API
+            dockerfile: Dockerfile-dev
+        container_name: api-dev
+        ports:
+            - "5000:8000"
+        networks:
+            - frontend
+            - backend
+        volumes:
+            - ./backend/API:/opt/API
+    reverse_proxy_dev:
+        build:
+            context: ./backend/reverse_proxy
+            dockerfile: Dockerfile-dev
+        ports:
+            - "443:443"
+        networks:
+            - frontend
+            - backend
+        volumes:
+            - ./backend/reverse_proxy/:/opt
+            - /var/run/docker.sock:/var/run/docker.sock
+    evaluator_dev:
+        build: ./backend/evaluator
+        container_name: evaluator-dev
+        networks: 
+            - backend
+
+networks:
+    frontend:
+    backend:
