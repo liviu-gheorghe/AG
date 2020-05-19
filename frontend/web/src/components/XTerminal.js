@@ -5,7 +5,7 @@ import { Terminal } from "xterm";
 import './xterm.css';
 var welcome_message = "Bine ai venit,aceasta este o sesiune interactiva de terminal, te rugam asteapta"+
 " putin pana configuram lucrurile\r\nSe stabileste conexiunea...\r\n";
-export default class XTerminal extends React.Component
+class XTerminal extends React.Component
 {
     componentDidMount() {
         this.terminal.loadAddon(this.attachAddon);
@@ -21,13 +21,16 @@ export default class XTerminal extends React.Component
             console.log("Socket connection created successfully");
             component.props.handleSocketOpen();
             // Focus the terminal
-            let textarea = document.getElementsByClassName('xterm-helper-textarea')[0];
-            textarea.focus();
+            //let textarea = document.getElementsByClassName('xterm-helper-textarea')[0];
+            //textarea.focus();
         }
         socket.onclose = function () {
             component.props.handleSocketClose();
             component.terminal.clear();
             console.log("The socket connection has been closed by the server");
+        }
+        socket.onmessage = function () {
+            component.props.handleSocketMessage();
         }
         socket.onerror = function () {
             component.props.handleSocketClose();
@@ -49,7 +52,8 @@ export default class XTerminal extends React.Component
     });
     render () { 
         return (
-        <div id="terminal" ></div>
+        <div id="terminal"></div>
         );  
     }
 }
+export default XTerminal;

@@ -1,29 +1,22 @@
 import React from 'react';
-import Header from './components/Header';
-import PageScroller from './components/PageScroller';
+import Header from '../components/Header';
+import PageScroller from '../components/PageScroller';
 import { withCookies } from 'react-cookie';
-import {ProblemCard} from './components/Cards';
+import {ProblemCard} from '../components/Cards';
+import LoadingModal from '../components/LoadingModal';
 import 
     {
     Container,
     Row,
     Col, 
-    Card,
-    // eslint-disable-next-line
-    CardColumns,
-    // eslint-disable-next-line
-    CardDeck,
     Button,
     InputGroup,
     FormControl,
-    Pagination,
-    Spinner,
-    Badge,
     } 
     from 'react-bootstrap';
 // eslint-disable-next-line
 import FontAwesome from 'react-fontawesome';
-import './Main.css';
+import '../Main.css';
 import './ProblemsList.css';
 
 
@@ -106,10 +99,6 @@ end=${end_index}
             )
     }
 
-    //Total time spent questioning myself why the fuck the code isn't working properly : 70 minutes
-    //https://stackoverflow.com/questions/36085726/why-is-setstate-in-reactjs-async-instead-of-sync
-
-
     // As setState is async, use fetchProblems 
     // as a callback
     loadNextProblems = () => {
@@ -162,6 +151,12 @@ end=${end_index}
         })
     }
 
+    componentWillMount() {
+        this.setState({
+            page_data: require('../assets/strings/problems_list_page.json')
+        });
+    }
+
     componentDidMount() {
         this.setState({
             fetch_type: 'append'
@@ -173,7 +168,8 @@ end=${end_index}
     }
 
    render () {
-       console.log(this.state.problems_list);
+       var page_language = this.props.cookies.get('language') || 'ro';
+       //console.log(this.state.page_data);
        return (
            <>
             <Header logged_user={this.props.cookies.get('username')} />
@@ -186,13 +182,13 @@ end=${end_index}
                     <Col xs={12} className="filter_section my-2">
                         <InputGroup className="mb-3">
                             <FormControl
-                                placeholder="Cauta problema(id,nume)"
+                                           placeholder={this.state.page_data.search_placehoder_text[page_language]}
                                 aria-label="Cautare problema"
                                 aria-describedby=""
                                 onChange = { this.updateSearchQuery }
                                 />
                             <InputGroup.Append>
-                                <Button variant="outline-secondary" onClick={ this.searchByQueryParams }>Cautare</Button>
+                                           <Button variant="outline-secondary" onClick={this.searchByQueryParams}>{this.state.page_data.search_button_text[page_language]}</Button>
                             </InputGroup.Append>
                         </InputGroup>
                         <div
@@ -208,7 +204,7 @@ end=${end_index}
                                 }
                             }
                             >
-                            <span>Categorii</span>
+                            <span>{this.state.page_data.categories_button_text[page_language]}</span>
                             <FontAwesome name="list-alt" style={{ fontSize: '35px', margin: '0px 5px' }} />
                         </div>
                     </Col>
@@ -224,12 +220,7 @@ end=${end_index}
                     }
                     {
                         this.state.fetch_pending ? (
-                            <Col xs={12} className="text-center">
-                                <Spinner animation="grow" />
-                                <Spinner animation="grow" />
-                                <Spinner animation="grow" />
-                                
-                            </Col>
+                            <LoadingModal />
                             ) : 
                             (
                             <Col xs={12} className="text-center my-4">
@@ -237,7 +228,8 @@ end=${end_index}
                                     variant="success"
                                     onClick={this.loadNextProblems}
                                 >
-                                    Incarca mai multe <FontAwesome name="hourglass" />
+                                    {this.state.page_data.load_items_button_text[page_language]}
+                                    <FontAwesome name="hourglass" />
                                 </Button>
                             </Col>                                
                             )

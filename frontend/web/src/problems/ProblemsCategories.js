@@ -3,9 +3,9 @@ import './ProblemsCategories.css';
 import {Container,Row,Col,Card,Badge} from 'react-bootstrap';
 import {withCookies} from 'react-cookie';
 import FontAwesome from 'react-fontawesome';
-import PageScroller from './components/PageScroller';
-import {ProblemCategoryCard} from './components/Cards';
-import Header from './components/Header';
+import PageScroller from '../components/PageScroller';
+import {ProblemCategoryCard} from '../components/Cards';
+import Header from '../components/Header';
 class ProblemsCategories extends React.Component {
     constructor(props) {
         super(props);

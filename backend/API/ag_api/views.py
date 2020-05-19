@@ -219,8 +219,6 @@ class TutorialArticleViewSet(viewsets.ReadOnlyModelViewSet):
 @api_view(['POST',])
 @permission_classes([IsAuthenticated])
 def evaluate(request):
-    '''
-    '''
     #converting the request body from bytestream to python object
     payload = json.loads(
         request.body.decode('utf8').replace("'", '"'))
@@ -318,7 +316,7 @@ def evaluate(request):
         source_text = payload['source_text'],
         source_type = payload['type_of_source'],
         score = score,
-    )
+     )
     http_resp_json = json.dumps({'tests': response_list, 'score': score})
     return HttpResponse("{}".format(http_resp_json))
 

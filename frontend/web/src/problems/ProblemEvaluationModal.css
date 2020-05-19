@@ -1,0 +1,21 @@
+.loading_overlay
+{
+    color:#fff;
+    top:0px;
+    min-height: 150vh;
+    width:100vw;
+    position: fixed;
+    z-index:999;
+    background-color:rgba(0,0,0,.95);
+}
+.tests_table_wrapper
+{
+    padding:0px !important;
+    background-color: #fff;
+    height: 100vh;
+    overflow-x: auto;
+}
+.stats_details_wrapper
+{
+        height: 100vh;
+}

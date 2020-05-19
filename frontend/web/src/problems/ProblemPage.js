@@ -1,29 +1,22 @@
 import React  from 'react';
 import { withCookies } from 'react-cookie';
-import PageScroller from './components/PageScroller';
-import {Container,Row,Col,Button,Card,Badge,Tab,Nav} from 'react-bootstrap';
+import PageScroller from '../components/PageScroller';
+import {Container,Row,Col,Button,Badge,Tab,Nav} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
-import Header from './components/Header';
-import {ProblemSolutionCard} from './components/Cards';
-import ProblemEvaluationModal from './components/ProblemEvaluationModal';
-//import Page404 from './components/Page404';
-import {ProblemDetailsTable} from './components/ProblemDetailsTable';
-import './ProblemPage.css';
-//Ace editor imports
+import Header from '../components/Header';
+import {ProblemSolutionCard} from '../components/Cards';
+import ProblemEvaluationModal from './ProblemEvaluationModal';
+import {ProblemDetailsTable} from '../components/ProblemDetailsTable';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/webpack-resolver";
 import 'brace/ext/language_tools';
-
-import {capitalizeString} from './utils/core';
-
-
+import './ProblemPage.css';
+import {capitalizeString} from '../utils/core';
 
 
-         
-class ProblemPage extends React.Component {
-          
+class ProblemPage extends React.Component {          
     // Ace modes used for text editor highlighting
     ACE_MODES = {
     "c++"        : "c_cpp",
@@ -40,14 +33,13 @@ class ProblemPage extends React.Component {
             unauthorized:false,
             problem : null,
             languages: [],
-            source_text:  ``,
-            current_language:"C++",
+            source_text:  '',
+            current_language:"c++",
             editor_mode:'c_cpp',
-            evaluation : {
-                evaluation_info: [],
-                evaluation_overlay: false,
-                source_pending: false,
-            },
+            evaluation_data:[],
+            evaluation_error:false,
+            source_pending:false,
+            evaluation_overlay:false,
             problem_solutions : [],
         };
     }
@@ -59,11 +51,9 @@ class ProblemPage extends React.Component {
 
     closeOverlay = () => {
         this.setState({
-            evaluation: {
-                evaluation_info: [],
-                evaluation_overlay: false,
-                source_pending: false,
-            }
+            source_pending:false,
+            evaluation_info:[],
+            evaluation_overlay:false,
     });
     }
 
@@ -102,7 +92,6 @@ class ProblemPage extends React.Component {
             resp => {
                 if(resp.status === 401)
                 {
-                    console.log("AICI");
                     this.setState({
                         unauthorized : true,
                     })
@@ -116,11 +105,9 @@ class ProblemPage extends React.Component {
                 {
                     if(this.state.unauthorized === false)
                     {
-                    console.log(resp)
-                    //console.log("Setting up problems");
-                    this.setState({
-                        problem_solutions : resp
-                    })
+                        this.setState({
+                            problem_solutions : resp
+                        })
                     }
                     else 
                     {
@@ -131,7 +118,7 @@ class ProblemPage extends React.Component {
         .catch(err => console.error(err))
     }
 
-            
+
     fetchProblemData = (problem_id) => {
         fetch(
             `${process.env.REACT_APP_API_URL}/api/problems/${problem_id}/`,
@@ -151,17 +138,17 @@ class ProblemPage extends React.Component {
         .catch(err => {console.log(err)})
     }
 
-    toggleSelectedLanguage = lang => {
-        this.updateSourceText(lang.default_snippet);
+    updateSelectedProgrammingLanguage = programming_language => {
+        this.updateSourceText(programming_language.default_snippet);
         this.setState({
-            current_language: lang.name,
-            editor_mode: this.ACE_MODES[lang.name],
+            current_language: programming_language.name,
+            editor_mode: this.ACE_MODES[programming_language.name],
         });
     }
              
-    updateSourceText = new_source_text => {
+    updateSourceText = source_text => {
         this.setState({
-            source_text: new_source_text,
+            source_text: source_text,
         });
     }
              
@@ -178,13 +165,8 @@ class ProblemPage extends React.Component {
 
     sendSolution = () => {
         this.setState({
-            evaluation: {
-                evaluation_overlay: true,
-                source_pending: true,
-                evaluation_info: [],
-                overall_score : null,
-                runtime_err : null,
-            },
+            source_pending:true,
+            evaluation_overlay: true,
         });
         var language_extension = this.state.current_language.toLowerCase();
         fetch(
@@ -206,7 +188,7 @@ class ProblemPage extends React.Component {
         )
         .then(
             resp => {
-                console.log(resp.status);
+                console.log(resp);
                 return resp.json();
             }
         )
@@ -214,26 +196,30 @@ class ProblemPage extends React.Component {
             resp_json => {
                 console.log(resp_json);
                 this.setState({
-                        evaluation: {
-                            source_pending: false,
-                            evaluation_overlay: true,
-                            evaluation_info: resp_json['tests'],
-                            overall_score : resp_json['score'],
-                            runtime_err : resp_json['message'],
-                        },
+                        evaluation_data: resp_json,
+                        source_pending:false,
+                        evaluation_overlay: true,
                 });
             }
         )
         .catch(
             err => {
+                console.log("Error");
                 console.log(err);
                 this.setState({
-                    evaluation: {
-                        source_pending: false,
-                        evaluation_overlay: true,
-                        evaluation_info: [],
-                    },
+                    evaluation_error: true,
+                    evaluation_data: undefined,
+                    source_pending: false,
+                    evaluation_overlay: true
                 });
+            }
+        )
+    }
+
+    componentWillMount() {
+        this.setState(
+            {
+                page_data:require('../assets/strings/problem_page.json')
             }
         )
     }
@@ -255,9 +241,11 @@ class ProblemPage extends React.Component {
         }
     }
     render() {
+        var page_language = this.props.cookies.get('language') || 'ro';
+        var tabs = this.state.page_data.tabs;
         if (this.state.problem && !this.state.problem.detail)
             return (
-                <div style={{"position": "relative"}}>
+                <>
                     <Header logged_user={this.props.cookies.get('username')} />
                     <Container>
                         <Row className="justify-content-center">
@@ -268,13 +256,13 @@ class ProblemPage extends React.Component {
                                         <Col sm={12}>
                                             <Nav variant="pills" className="justify-content-center">
                                                 <div>
-                                                    <Nav.Link eventKey="first" className="text-center">Descriere</Nav.Link>
+                                                    <Nav.Link eventKey="first" className="text-center">{tabs.description.tab_title[page_language]}</Nav.Link>
                                                 </div>
                                                 <div>
-                                                    <Nav.Link eventKey="second" className="text-center">Explicatii/Indicatii</Nav.Link>
+                                                    <Nav.Link eventKey="second" className="text-center">{tabs.explanations.tab_title[page_language]}</Nav.Link>
                                                 </div>
                                                 <div>
-                                                    <Nav.Link eventKey="third" className="text-center">Detalii problema</Nav.Link>
+                                                    <Nav.Link eventKey="third" className="text-center">{tabs.details.tab_title[page_language]}</Nav.Link>
                                                 </div>
                                             </Nav>
                                         </Col>
@@ -282,13 +270,13 @@ class ProblemPage extends React.Component {
                                             <Tab.Content>
                                                 <Tab.Pane eventKey="first">
                                                     <h2 className="text-primary"><Badge variant="primary" className="p-2">{this.state.problem.name}</Badge></h2>
-                                                    <h2>Descrierea problemei</h2>
+                                                    <h2>{tabs.description.tab_content.description[page_language]}</h2>
                                                     <p>{this.state.problem.description}</p>
-                                                    <h2>Date de intrare </h2>
+                                                    <h2>{tabs.description.tab_content.input[page_language]}</h2>
                                                     <p>{this.state.problem.std_input}</p>
-                                                    <h2>Date de iesire </h2>
+                                                    <h2>{tabs.description.tab_content.output[page_language]}</h2>
                                                     <p>{this.state.problem.std_output}</p>
-                                                    <h2>Restrictii si precizari</h2>
+                                                    <h2>{tabs.description.tab_content.restrictions[page_language]}</h2>
                                                     <div>{this.state.problem.restrictions}</div>
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="second" className="text-center">
@@ -298,8 +286,8 @@ class ProblemPage extends React.Component {
                                                         ):
                                                         (
                                                             <>
-                                                            <p>Nu exista explicatii/indicatii pentru aceasta problema</p>
-                                                            <img className="gif_placeholder" src={require(`./assets/img/gifs/nif00.gif`)} />
+                                                                <p>{tabs.explanations.tab_content.no_explanation_massage[page_language]}</p>
+                                                                <img className="gif_placeholder" src={require(`../assets/img/gifs/nif00.gif`)} alt=""/>
                                                             </>
                                                         )
                                                     }
@@ -325,7 +313,7 @@ class ProblemPage extends React.Component {
                                                     className = {
                                                         (this.areStringsEqual(this.state.current_language, lang.name)) ? "active_language" : ""
                                                     }
-                                                    onClick={() => { this.toggleSelectedLanguage(lang) }}
+                                                    onClick={() => { this.updateSelectedProgrammingLanguage(lang) }}
                                                 >
                                                 {capitalizeString(lang.name)}
                                                 </span>
@@ -362,7 +350,7 @@ class ProblemPage extends React.Component {
                                         this.state.unauthorized ? this.denySending : this.sendSolution
                                     }
                                     >
-                                        <span>Trimite solutia </span>
+                                        <span>{this.state.page_data.editor.send_solution_button_text[page_language]}</span>
                                         <FontAwesome name="upload"/>
                                     </Button>
                                 </p>
@@ -370,14 +358,14 @@ class ProblemPage extends React.Component {
                         </Row>
                         {
                             (this.state.unauthorized) ? 
-                        ('Nu esti conectat :(') : 
+                        (this.state.page_data.solutions.unauthorized_message[page_language]) : 
                         (
                         <Row className="justify-content-center my-4">
                             <Col xs={12}>
-                                <h2>Solutiile mele</h2>
+                                <h2>{this.state.page_data.solutions.section_title[page_language]}</h2>
                                 {
                                     this.state.problem_solutions.length === 0 ? (
-                                        'Inca nu ai adaugat solutii pentru acesta problema'
+                                        this.state.page_data.solutions.section_content.no_solutions_message[page_language]
                                     ) : ('')
                                 }
                             </Col>
@@ -396,12 +384,17 @@ class ProblemPage extends React.Component {
                         <PageScroller />
                     </Container>
                     {
-                        (this.state.evaluation.evaluation_overlay) ? (
-                            <ProblemEvaluationModal  eval_state={this.state.evaluation} hideOverlay = {this.closeOverlay} />
+                        (this.state.evaluation_overlay) ? (
+                            <ProblemEvaluationModal
+                                evaluation_error={this.state.evaluation_error}
+                                evaluation_data={this.state.evaluation_data}
+                                source_pending={this.state.source_pending}
+                                hideOverlay = {this.closeOverlay} 
+                            />
                         ) :
                         (<> </>)
                     }
-                </div>
+                </>
             );
         else 
             return <></>

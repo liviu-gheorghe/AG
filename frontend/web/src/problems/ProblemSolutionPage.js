@@ -1,9 +1,9 @@
 import React from 'react';
 import {withCookies} from 'react-cookie';
 import './ProblemSolutionPage.css'
-import {Container,Row,Col,Spinner,Table,Badge} from 'react-bootstrap';
-import Header from './components/Header';
-import {ProblemDetailsTable} from './components/ProblemDetailsTable';
+import {Container,Row,Col,Spinner,Table} from 'react-bootstrap';
+import Header from '../components/Header';
+import {ProblemDetailsTable} from '../components/ProblemDetailsTable';
 import FontAwesome from 'react-fontawesome';
 //Ace editor imports
 import AceEditor from "react-ace";

@@ -48,7 +48,7 @@ body
 }
 .homepage_info
 {
-    margin-top: 200px;
+
 }
 .homepage_info .card
 {
@@ -72,6 +72,24 @@ body
     font-size: 40px;
     margin: 10px;
 }
+
+.service_image_wrapper
+{
+    padding:0px !important;
+}
+
+@media only screen and (max-width:991px) {
+.service_description {
+    padding-top:10px;
+}    
+}
+
+
+.service_description img {
+    width:100%;
+    object-fit: cover;
+}
+
 .join_community_info_wrapper .row
 {
     margin: 40px 0px;
